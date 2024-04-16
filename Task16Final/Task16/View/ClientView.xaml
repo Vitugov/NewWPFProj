@@ -1,0 +1,98 @@
+﻿<Window x:Class="Task16.View.ClientView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Task16.View"
+        mc:Ignorable="d"
+        Title="Карточка клиента" Height="330" Width="365"
+        Name ="ClientWindow">
+    <Border Style="{StaticResource BorderStyle}">
+        <StackPanel>
+            <TextBlock Style="{StaticResource HeaderStyle}">Реквизиты клиента</TextBlock>
+            <Grid Margin="0,20,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="220"/>
+                    <ColumnDefinition Width="30"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock
+                        Text="Фамилия:"
+                        Style="{StaticResource TextBlockStyle}"/>
+                    <TextBlock
+                        Text="Имя:"
+                        Style="{StaticResource TextBlockStyle}"/>
+                    <TextBlock
+                        Text="Отчество:"
+                        Style="{StaticResource TextBlockStyle}"/>
+                    <TextBlock
+                        Text="Телефон:"
+                        Style="{StaticResource TextBlockStyle}"/>
+                    <TextBlock
+                        Text="E-mail:"
+                        Style="{StaticResource TextBlockStyle}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <TextBox
+                        Text="{Binding ClientView.Surname, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource TextBoxStyle}"/>
+                    <TextBox
+                        Text="{Binding ClientView.FirstName, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource TextBoxStyle}"/>
+                    <TextBox
+                        Text="{Binding ClientView.Patronymic, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource TextBoxStyle}"/>
+                    <TextBox
+                        Text="{Binding ClientView.TelephoneNumber, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource TextBoxStyle}"/>
+                    <TextBox
+                        Text="{Binding ClientView.Email, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource TextBoxStyle}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock
+                        Text="{Binding Validation.Surname, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToTextConverter}}"
+                        Foreground="{Binding Validation.Surname, Converter={StaticResource BoolToColorConverter}}"
+                        Style="{StaticResource TextBlockStyle}"/>
+
+                    <TextBlock
+                        Text="{Binding Validation.FirstName, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToTextConverter}}"
+                        Foreground="{Binding Validation.FirstName, Converter={StaticResource BoolToColorConverter}}"
+                        Style="{StaticResource TextBlockStyle}"/>
+
+                    <TextBlock
+                        Text="{Binding Validation.Patronymic, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToTextConverter}}"
+                        Foreground="{Binding Validation.Patronymic, Converter={StaticResource BoolToColorConverter}}"
+                        Style="{StaticResource TextBlockStyle}"/>
+
+                    <TextBlock
+                        Text="{Binding Validation.TelephoneNumber, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToTextConverter}}"
+                        Foreground="{Binding Validation.TelephoneNumber, Converter={StaticResource BoolToColorConverter}}"
+                        Style="{StaticResource TextBlockStyle}"/>
+
+                    <TextBlock
+                        Text="{Binding Validation.Email, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToTextConverter}}"
+                        Foreground="{Binding Validation.Email, Converter={StaticResource BoolToColorConverter}}"
+                        Style="{StaticResource TextBlockStyle}"/>
+                </StackPanel>
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="160"/>
+                    <ColumnDefinition Width="160"/>
+                </Grid.ColumnDefinitions>
+                <Button
+                    Grid.Column="0"
+                    Content="Отмена"
+                    Command="{Binding CancelCommand}"
+                    CommandParameter="{Binding ElementName=ClientWindow}"/>
+                <Button
+                    Grid.Column="1"
+                    Content="Сохранить"
+                    Command="{Binding SaveCommand}"
+                    CommandParameter="{Binding ElementName=ClientWindow}"/>
+            </Grid>
+        </StackPanel>
+    </Border>
+</Window>

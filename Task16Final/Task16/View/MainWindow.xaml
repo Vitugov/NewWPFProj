@@ -1,0 +1,74 @@
+﻿<Window x:Class="Task16.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Task16" xmlns:viewmodel="clr-namespace:Task16.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowVM}"
+        mc:Ignorable="d"
+        Title="ООО КиберШоп" Height="660" Width="750">
+    <StackPanel>
+        <Border Style="{StaticResource BorderStyle}">
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Style="{StaticResource HeaderStyle}">Клиенты</TextBlock>
+                    <Button
+                        Grid.Column="1"
+                        Content="Добавить нового клиента"
+                        Command="{Binding AddNewClientCommand}"/>
+                    <Button
+                        Grid.Column="2"
+                        Content="Редактировать данные клиента"
+                        Command="{Binding ChangeClientCommand}"/>
+                    <Button
+                        Grid.Column="3"
+                        Content="Удалить клиента"
+                        Command="{Binding DeleteClientCommand}"/>
+                </Grid>
+                <DataGrid
+                    ItemsSource="{Binding Clients}"
+                    SelectedItem="{Binding SelectedClient, UpdateSourceTrigger=PropertyChanged}"
+                    AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"/>
+            </StackPanel>
+        </Border>
+        <Border Style="{StaticResource BorderStyle}">
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Style="{StaticResource HeaderStyle}">Заказы</TextBlock>
+                    <CheckBox
+                        Grid.Column="1"
+                        Content="Показывать все"
+                        IsChecked="{Binding IsAllOrdersVisible}"/>
+                    <Button
+                        Grid.Column="2"
+                        Content="Создать новый заказ"
+                        Command="{Binding AddNewOrderCommand}"/>
+                    <Button
+                        Grid.Column="3"
+                        Content="Редактировать заказ"
+                        Command="{Binding ChangeOrderCommand}"/>
+                    <Button
+                        Grid.Column="4"
+                        Content="Удалить заказ"
+                        Command="{Binding DeleteOrderCommand}"/>
+                </Grid>
+                <DataGrid
+                    ItemsSource="{Binding OrdersView}"
+                    SelectedItem="{Binding SelectedOrder, UpdateSourceTrigger=PropertyChanged}"
+                    AutoGeneratingColumn="DataGrid_AutoGeneratingColumn"/>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</Window>
