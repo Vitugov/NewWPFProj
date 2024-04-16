@@ -27,9 +27,6 @@ namespace WPFUsefullThings.View
             InitializeComponent();
         }
 
-        public void Construct()
-        {
-            DataContext as ItemViewModel<T>
-        }
+
     }
 }
