@@ -11,7 +11,6 @@ using System.Windows;
 using System.Windows.Input;
 using Task16.Model;
 using WPFUsefullThings;
-using WPFUsefullThings.Validation;
 
 namespace Task16.ViewModel
 {

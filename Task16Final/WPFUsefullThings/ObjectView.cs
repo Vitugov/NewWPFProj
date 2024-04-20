@@ -11,37 +11,55 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using PropertyChanged;
 
 namespace WPFUsefullThings
 {
-    public class ObjectView<T>
-        where T : class, IUpdateable<T>, INotifyPropertyChanged, new()
+    public class ObjectView<T> : INotifyPropertyChanged
+        where T : class, IProjectModel, new()
     {
-        public readonly T Edit;
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public T Edit {  get; set; }
         public DynamicIsValid IsPropertyValid => _validation.IsValid;
         public bool IsValid => _validation.Validate();
 
+        private Dictionary<string, ObservableCollection<KeyValuePair<string, IProjectModel>>> _dic;
+        public Dictionary<string, ObservableCollection<KeyValuePair<string, IProjectModel>>> Dic
+        {
+            get;
+            set;
+        }
+
+
         private readonly ObservableCollection<T> _collection;
-        private readonly Type _contextType;
+        private readonly Type _dbContextType;
         private readonly T _original;
-        private readonly bool _isNew;
+        private readonly bool _isNew = false;
         private readonly Validation<T> _validation;
 
-        public ObjectView(T original, ObservableCollection<T> collection, Type contextType)
+
+        public ObjectView(T? original, ObservableCollection<T> collection, Type contextType)
         {
+            if (original == null)
+            {
+                _isNew = true;
+                original = new T();
+            }
             IfNotADbContextThrowExeption(contextType);
-            _isNew = false;
+            _dbContextType = contextType;
+            var context = (DbContext)Activator.CreateInstance(_dbContextType);
+            Dic = context.GetDictionariesOfRelatedProperties(typeof(T));
             _original = original;
             Edit = (T)original.Clone();
             _collection = collection;
-            _contextType = contextType;
             _validation = new Validation<T>(Edit);
-        }
 
-        public ObjectView(ObservableCollection<T> collection, Type contextType)
-            : this(new T(), collection, contextType)
-        {
-            _isNew = true;
+            foreach (var property in Dic.Keys)
+            {
+                var id = ((IProjectModel)typeof(T).GetProperty(property).GetValue(Edit)).Id;
+                var obj = Dic[property].Where(pair => pair.Value.Id == id).Select(pair => pair.Value).FirstOrDefault();
+                typeof(T).GetProperty(property).SetValue(Edit, obj);
+            }
         }
 
         public void Save()
@@ -73,6 +91,6 @@ namespace WPFUsefullThings
                 throw new ArgumentException("Type of the context don't belong to class DbContext");
         }
 
-        private DbContext GetContext() => (DbContext)Activator.CreateInstance(_contextType);
+        private DbContext GetContext() => (DbContext)Activator.CreateInstance(_dbContextType);
     }
 }

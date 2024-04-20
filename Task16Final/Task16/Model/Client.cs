@@ -11,25 +11,30 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace Task16.Model
 {
-    public class Client : IUpdateable<Client>, INotifyPropertyChanged
+    [DisplayName("Клиенты")]
+    public class Client : IProjectModel
     {
         public event PropertyChangedEventHandler? PropertyChanged;
-        public int? Id { get; set; }
         
-        [Required]
+        [DisplayName("Id")]
+        public int? Id { get; set; }
+
+        [DisplayName("Фамилия")]
         [StringLength(25, MinimumLength = 1)]
         public string Surname { get; set; }
-        
-        [Required]
+
+        [DisplayName("Имя")]
         [StringLength(25, MinimumLength = 1)]
         public string FirstName { get; set; }
-        
-        [Required]
+
+        [DisplayName("Отчество")]
         [StringLength(25, MinimumLength = 1)]
         public string Patronymic { get; set; }
+
+        [DisplayName("Номер телефона")]
         public string? TelephoneNumber { get; set; }
-        
-        [Required]
+
+        [DisplayName("E-mail")]
         [EmailAddress]
         public string Email { get; set; }
 
@@ -56,14 +61,25 @@ namespace Task16.Model
             };
         }
 
-        public void UpdateFrom(Client obj)
+        public void UpdateFrom(object obj)
         {
-            Id = obj.Id;
-            Surname = obj.Surname;
-            FirstName = obj.FirstName;
-            Patronymic = obj.Patronymic;
-            TelephoneNumber = obj.TelephoneNumber;
-            Email = obj.Email;
+            var client = (Client)obj;
+            Id = client.Id;
+            Surname = client.Surname;
+            FirstName = client.FirstName;
+            Patronymic = client.Patronymic;
+            TelephoneNumber = client.TelephoneNumber;
+            Email = client.Email;
+        }
+
+        public string ToViewString()
+        {
+            return $"{Surname} {FirstName} {Patronymic}";
+        }
+
+        public override string ToString()
+        {
+            return ToViewString();
         }
     }
 }

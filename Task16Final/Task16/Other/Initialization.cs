@@ -27,26 +27,26 @@ namespace Task16.Other
 
         private static readonly List<Order> InitOrders = new List<Order>
         {
-            new Order("jan.nowak@gmail.com", 101, "Модулятор Нейро-Интерфейса"),
-            new Order("piotr.kowalski@yahoo.com", 102, "Протез Кибернетической Руки"),
-            new Order("tomasz.wisniewski@outlook.com", 103, "Плащ Оптической Камуфляжа"),
-            new Order("michal.dabrowski@mail.ru", 104, "Квантовый ЦПУ"),
-            new Order("krzysztof.lewandowski@yandex.ru", 105, "Инжектор Нанитов Здоровья"),
-            new Order("marek.wojcik@protonmail.com", 106, "Молекулярное Лезвие"),
-            new Order("jacek.kaminski@icloud.com", 107, "Антигравитационные Ботинки"),
-            new Order("rafal.zielinski@aol.com", 108, "Плазменная Винтовка"),
-            new Order("karol.szymanski@inbox.ru", 109, "Ручка Голографической Маскировки"),
-            new Order("grzegorz.wozniak@live.com", 110, "ЭМП Граната"),
-            new Order("jan.nowak@gmail.com", 111, "Шифратор Цифрового Сознания"),
-            new Order("piotr.kowalski@yahoo.com", 112, "Очки Дополненной Реальности"),
-            new Order("tomasz.wisniewski@outlook.com", 113, "Синтетическое Мышечное Волокно"),
-            new Order("michal.dabrowski@mail.ru", 114, "Гель Дермальной Брони"),
-            new Order("krzysztof.lewandowski@yandex.ru", 115, "Кольцо Электрошоковой Защиты"),
-            new Order("marek.wojcik@protonmail.com", 116, "Стелс-Дрон"),
-            new Order("jacek.kaminski@icloud.com", 117, "Портативное Устройство Взлома"),
-            new Order("rafal.zielinski@aol.com", 118, "Беспроводной Пауэрбанк"),
-            new Order("karol.szymanski@inbox.ru", 119, "Отмычка Биометрических Замков"),
-            new Order("grzegorz.wozniak@live.com", 120, "Генератор Личного Силового Поля")
+            new Order(InitClients[0], 101, "Модулятор Нейро-Интерфейса"),
+            new Order(InitClients[1], 102, "Протез Кибернетической Руки"),
+            new Order(InitClients[2], 103, "Плащ Оптической Камуфляжа"),
+            new Order(InitClients[3], 104, "Квантовый ЦПУ"),
+            new Order(InitClients[4], 105, "Инжектор Нанитов Здоровья"),
+            new Order(InitClients[5], 106, "Молекулярное Лезвие"),
+            new Order(InitClients[6], 107, "Антигравитационные Ботинки"),
+            new Order(InitClients[7], 108, "Плазменная Винтовка"),
+            new Order(InitClients[8], 109, "Ручка Голографической Маскировки"),
+            new Order(InitClients[9], 110, "ЭМП Граната"),
+            new Order(InitClients[0], 111, "Шифратор Цифрового Сознания"),
+            new Order(InitClients[1], 112, "Очки Дополненной Реальности"),
+            new Order(InitClients[2], 113, "Синтетическое Мышечное Волокно"),
+            new Order(InitClients[3], 114, "Гель Дермальной Брони"),
+            new Order(InitClients[4], 115, "Кольцо Электрошоковой Защиты"),
+            new Order(InitClients[5], 116, "Стелс-Дрон"),
+            new Order(InitClients[6], 117, "Портативное Устройство Взлома"),
+            new Order(InitClients[7], 118, "Беспроводной Пауэрбанк"),
+            new Order(InitClients[8], 119, "Отмычка Биометрических Замков"),
+            new Order(InitClients[9], 120, "Генератор Личного Силового Поля")
         };
 
         static Initialization()

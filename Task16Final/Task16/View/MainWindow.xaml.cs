@@ -1,51 +1,53 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Task16.Model;
 using Task16.Other;
 using Task16.ViewModel;
+using WPFUsefullThings;
+using WPFUsefullThings.ViewModels;
 
 namespace Task16.View
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Dictionary<string, string> columnNames = new Dictionary<string, string>
+        public ICommand OpenClientCollectionWindow {  get; set; }
+        public ICommand OpenOrderCollectionWindow { get; set; }
+
+        public MainWindow()
         {
-            {"Id", "Id"},
-            {"FirstName", "Имя                   "},
-            {"Surname", "Фамилия             "},
-            {"Patronymic", "Отчество         "},
-            {"Email", "Электронная почта                            "},
-            {"TelephoneNumber", "Номер телефона         "},
-            {"ProductId", "Id товара        "},
-            {"ProductName", "Название товара       "}
-        };
-    public MainWindow()
-        {
+            OpenClientCollectionWindow = new RelayCommand(obj => Execute_OpenClientCollectionWindow());
+            OpenOrderCollectionWindow = new RelayCommand(obj => Execute_OpenOrderCollectionWindow());
+            //Initialization.Instance.Init();
             InitializeComponent();
-            DataContext = new MainWindowVM();
-            this.Activated += (DataContext as MainWindowVM).RefreshView;
+            DataContext = this;
         }
 
-        private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        private void Execute_OpenClientCollectionWindow()
         {
-            
-            string headerName = e.Column.Header.ToString();
-            if (columnNames.ContainsKey(headerName))
-            {
-                e.Column.Header = columnNames[headerName];
-            }
+            var viewModel = new CollectionViewModel<Client>(typeof(SqliteContext));
+            var view = new CollectionWindow(viewModel);
+            view.ShowDialog();
         }
 
+        private void Execute_OpenOrderCollectionWindow()
+        {
+            var viewModel = new CollectionViewModel<Order>(typeof(SqliteContext));
+            var view = new CollectionWindow(viewModel);
+            view.ShowDialog();
+        }
     }
 }

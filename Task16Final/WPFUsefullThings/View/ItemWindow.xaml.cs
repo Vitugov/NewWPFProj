@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,14 +20,17 @@ namespace WPFUsefullThings.View
     /// <summary>
     /// Логика взаимодействия для ItemWindow.xaml
     /// </summary>
-    public partial class ItemWindow<T> : Window
-        where T : class, IUpdateable<T>, INotifyPropertyChanged, new()
+    public partial class ItemWindow : Window
     {
-        public ItemWindow(Type type)
+        public Type Type { get; set; }
+
+        public ItemWindow(Type type, object context)
         {
             InitializeComponent();
+            DataContext = context;
+            var stackPanel = WindowConstructor.InitializeItemWindow(type);
+            baseGrid.Children.Add(stackPanel);
         }
-
 
     }
 }

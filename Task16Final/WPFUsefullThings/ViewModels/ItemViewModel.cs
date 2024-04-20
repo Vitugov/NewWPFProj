@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -12,8 +13,15 @@ using WPFUsefullThings;
 namespace WPFUsefullThings.ViewModels
 {
     public class ItemViewModel<T> : INotifyPropertyChangedPlus
-        where T : class, IUpdateable<T>, INotifyPropertyChanged, new()
+        where T : class, IProjectModel, new()
     {
+        private DbContext GetContext() => (DbContext)Activator.CreateInstance(_dbContextType);
+        private readonly Type _dbContextType;
+
+        public string Header { get; set; }
+
+        public Dictionary<string, ObservableCollection<KeyValuePair<string, IProjectModel>>> Dic => Item.Dic;
+
         private ObjectView<T> _item;
         public ObjectView<T> Item
         {
@@ -26,14 +34,12 @@ namespace WPFUsefullThings.ViewModels
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
 
-        public ItemViewModel(T item, ObservableCollection<T> itemCollection, Type contextType) : this()
+        public ItemViewModel(T? item, ObservableCollection<T> itemCollection, Type contextType) : this()
         {
+            _dbContextType = contextType;
+            var addition = item == null ? "*" : "";
+            Header = typeof(T).GetClassDisplayName() + addition;
             Item = new ObjectView<T>(item, itemCollection, contextType);
-        }
-
-        public ItemViewModel(ObservableCollection<T> itemCollection, Type contextType) : this()
-        {
-            Item = new ObjectView<T>(itemCollection, contextType);
         }
 
         public ItemViewModel()

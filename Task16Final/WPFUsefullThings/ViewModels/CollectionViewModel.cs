@@ -11,16 +11,20 @@ using System.Windows.Input;
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using WPFUsefullThings.View;
 
 namespace WPFUsefullThings.ViewModels
 {
     public class CollectionViewModel<T> : INotifyPropertyChangedPlus
-        where T : class, IUpdateable<T>, INotifyPropertyChanged, new()
+        where T : class, IProjectModel, new()
     {
-        private DbContext GetContext() => (DbContext)Activator.CreateInstance(_contextType);
-        private readonly Type _contextType;
-        private readonly PropertyInfo[] _itemProperties;
-    
+        private DbContext GetContext() => (DbContext)Activator.CreateInstance(_dbContextType);
+        private readonly Type _dbContextType;
+
+        private readonly IProjectModel? _parent;
+        
+        public string Header { get; set; }
+        
         private ObservableCollection<T> _itemCollection;
         public ObservableCollection<T> ItemCollection
         {
@@ -51,7 +55,7 @@ namespace WPFUsefullThings.ViewModels
             set
             {
                 Set(ref _filterText, value);
-                ItemCollectionView.Filter = obj => DoesObjectContainString(obj, FilterText);
+                ItemCollectionView.Filter = obj => obj.IsContainingString(FilterText);
             }
         }
 
@@ -59,44 +63,48 @@ namespace WPFUsefullThings.ViewModels
         public ICommand ChangeItemCommand { get; }
         public ICommand DeleteItemCommand { get; }
 
-        public CollectionViewModel(Type contextType, T obj)
+        public CollectionViewModel(IProjectModel parent, IEnumerable<IProjectModel> list, Type dbContextType) : this()
         {
-            _contextType = contextType;
-            _itemProperties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            _dbContextType = dbContextType;
+            Header = typeof(T).GetClassDisplayName();
+            _parent = parent;
+
+            var table = list.Select(obj => obj.Id).ToList();
 
             using (var context = GetContext())
             {
-                ItemCollection = new ObservableCollection<T>(context.Set<T>());
+                var query = context.GetDeepData<T>().Where(o => table.Contains(o.Id));
+                ItemCollection = new ObservableCollection<T>(query);
             }
 
             ItemCollectionView = new ListCollectionView(ItemCollection);
+        }
 
+        public CollectionViewModel(Type dbContextType) : this()
+        {
+            _dbContextType = dbContextType;
+            Header = typeof(T).GetClassDisplayName();
+
+            using (var context = GetContext())
+            {
+                ItemCollection = context.GetDeepData<T>();
+            }
+
+            ItemCollectionView = new ListCollectionView(ItemCollection);
+        }
+
+        public CollectionViewModel()
+        {
             AddNewItemCommand = new RelayCommand(obj => ExecuteChangeItem());
             ChangeItemCommand = new RelayCommand(obj => ExecuteChangeItem(SelectedItem), obj => SelectedItem != null);
             DeleteItemCommand = new RelayCommand(obj => ExecuteDeleteItem(SelectedItem), obj => SelectedItem != null);
         }
 
-        private bool DoesObjectContainString(object obj, string str)
-        {;
-            if (str == null || str == "")
-                return true;
-            var result = _itemProperties.Any(property => property.GetValue(obj).ToString().Contains(str));
-            return result;
-        }
-
-        private void RefreshClients()
-        {
-            using (var context = GetContext())
-            {
-                ItemCollection = new ObservableCollection<T>(context.Set<T>());
-            }
-        }
-
         private void ExecuteChangeItem(T? item = null)
         {
-            var clientVM = new ClientVM(item);
-            var clientView = new ClientView(clientVM);
-            clientView.ShowDialog();
+            var itemVM = new ItemViewModel<T>(item, ItemCollection, _dbContextType);
+            var itemView = new ItemWindow(typeof(T), itemVM);
+            itemView.ShowDialog();
         }
 
         private void ExecuteDeleteItem(T? item)
@@ -113,18 +121,6 @@ namespace WPFUsefullThings.ViewModels
                 context.Set<T>().Remove(item);
                 context.SaveChanges();
             }
-        }
-
-        private void MainWindowVM_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            //if (e.PropertyName == nameof(SelectedItem) || e.PropertyName == nameof(FilterText))
-            //{
-            //    RefreshOrders();
-            //}
-            //if (e.PropertyName == nameof(Orders))
-            //{
-            //    ItemCollectionView = new ListCollectionView(Orders);
-            //}
         }
     }
 }

@@ -20,7 +20,6 @@ namespace Task16.ViewModel
         public OrderViewModel(Order order)
         {
             Id = order.Id;
-            Email = order.Email;
             ProductId = order.ProductId;
             ProductName = order.ProductName;
         }
@@ -53,7 +52,6 @@ namespace Task16.ViewModel
         public void UpdateFromOrder(Order order)
         {
             Id = order.Id;
-            Email = order.Email;
             ProductId = order.ProductId;
             ProductName = order.ProductName;
         }
@@ -63,7 +61,6 @@ namespace Task16.ViewModel
             return new Order
             {
                 Id = this.Id,
-                Email = this.Email,
                 ProductId = this.ProductId,
                 ProductName = this.ProductName
             };
@@ -72,7 +69,6 @@ namespace Task16.ViewModel
         public void UpdateOrder(Order order)
         {
             order.Id = Id;
-            order.Email = Email;
             order.ProductId = ProductId;
             order.ProductName = ProductName;
         }

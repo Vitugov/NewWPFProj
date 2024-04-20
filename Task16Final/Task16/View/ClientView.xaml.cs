@@ -25,7 +25,6 @@ namespace Task16.View
     {
         public ClientView(object dataContext)
         {
-            IViewModel
             InitializeComponent();
             DataContext = dataContext;
         }

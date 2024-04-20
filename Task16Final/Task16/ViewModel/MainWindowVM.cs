@@ -107,26 +107,10 @@ namespace Task16.ViewModel
         public void RefreshView(object sender, EventArgs e)
         {
             RefreshClients();
-            RefreshOrders();
+
         }
 
-        private void RefreshOrders()
-        {
-            if (IsAllOrdersVisible)
-            {
-                OrdersView.Filter = obj => true;
-                return;
-            }
-            if (SelectedClient == null)
-            {
-                OrdersView.Filter = obj => (obj as Order).Email == "";
-                return;
-            }
-            else
-            {
-                OrdersView.Filter = obj => (obj as Order).Email == SelectedClient.Email;
-            }
-        }
+        
 
         private void RefreshClients()
         {
@@ -146,12 +130,12 @@ namespace Task16.ViewModel
 
         private void ExecuteDeleteClient(Client client)
         {
-            if (Orders.Any(order => order.Email == client.Email))
-            {
-                MessageBox.Show("Нельзя удалить клиента у которого есть заказы", "Ошибка",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+            //if (Orders.Any(order => order.Email == client.Email))
+            //{
+            //    MessageBox.Show("Нельзя удалить клиента у которого есть заказы", "Ошибка",
+            //        MessageBoxButton.OK, MessageBoxImage.Error);
+            //    return;
+            //}
             
             Clients.Remove(client);
 
@@ -185,7 +169,7 @@ namespace Task16.ViewModel
         {
             if (e.PropertyName == nameof(SelectedClient) || e.PropertyName == nameof(IsAllOrdersVisible))
             {
-                RefreshOrders();
+
             }
             if (e.PropertyName == nameof(Orders))
             {

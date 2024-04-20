@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WPFUsefullThings.View"
         mc:Ignorable="d"
         Title="ItemWindow" Height="450" Width="800">
-    <Grid>
+    <Grid x:Name="baseGrid">
         
     </Grid>
 </Window>

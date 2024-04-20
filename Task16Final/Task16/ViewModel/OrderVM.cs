@@ -45,10 +45,7 @@ namespace Task16.ViewModel
 
             IsNew = order == null;
             OriginalOrder = order == null ? new Order() : order;
-            if (IsNew && client != null && client.Email != null)
-            {
-                OriginalOrder.Email = client.Email;
-            }
+            
             ClientsEmailDic = clientsEmailDic;
 
             Validation = new OrderValidationViewModel();
