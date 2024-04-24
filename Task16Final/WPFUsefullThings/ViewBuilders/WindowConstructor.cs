@@ -10,6 +10,7 @@ using System.Windows.Data;
 using Microsoft.Xaml.Behaviors;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using System.Collections;
 
 namespace WPFUsefullThings
 {
@@ -34,7 +35,7 @@ namespace WPFUsefullThings
                     Margin = new Thickness(5) // небольшой отступ
                 };
 
-                if ((property.PropertyType.IsValueType && !property.PropertyType.IsEnum)
+                if ((property.PropertyType.IsValueType && !property.PropertyType.IsEnum && !property.PropertyType.IsCollection())
                     || property.PropertyType == typeof(string)) // проверка на тип свойства
                 {
                     // Создание TextBox для значения свойства
@@ -89,21 +90,6 @@ namespace WPFUsefullThings
             Interaction.GetBehaviors(dataGrid).Add(columnHeaderBehaviour);
 
             return dataGrid;
-        }
-
-        public static string GetClassDisplayName(this Type type)
-        {
-            var displayNameAttribute = type.GetCustomAttribute<DisplayNameAttribute>();
-            if (displayNameAttribute != null)
-            {
-                return displayNameAttribute.DisplayName;
-            }
-            return type.Name;
-        }
-
-        public static IEnumerable<PropertyInfo> GetIProjectModelProperties(Type type)
-        {
-            return type.GetProperties().Where(p => typeof(IProjectModel).IsAssignableFrom(p.PropertyType));
         }
 
         public static ComboBox CreateComboBox(string propertyName)

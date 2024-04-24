@@ -44,6 +44,7 @@ namespace Task16.View
             if (columnNames.ContainsKey(headerName))
             {
                 e.Column.Header = columnNames[headerName];
+
             }
         }
 

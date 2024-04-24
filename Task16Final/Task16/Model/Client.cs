@@ -11,7 +11,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace Task16.Model
 {
-    [DisplayName("Клиенты")]
+    [DisplayNames("Клиент", "Клиенты")]
     public class Client : IProjectModel
     {
         public event PropertyChangedEventHandler? PropertyChanged;

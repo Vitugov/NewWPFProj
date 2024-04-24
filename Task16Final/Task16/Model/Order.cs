@@ -11,7 +11,7 @@ using WPFUsefullThings;
 namespace Task16.Model
 {
 
-    [DisplayName("Заказы")]
+    [DisplayNames("Заказ", "Заказы")]
     public class Order : IProjectModel
     {
         public event PropertyChangedEventHandler? PropertyChanged;
