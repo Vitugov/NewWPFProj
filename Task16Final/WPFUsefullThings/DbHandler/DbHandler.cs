@@ -8,43 +8,46 @@ using System.Threading.Tasks;
 
 namespace WPFUsefullThings
 {
-    public static class DbHandler
+    public class DbHandler
     {
-        public static ObservableCollection<T> GetDeepData<T>(this DbContext context)
-            where T : class, IProjectModel
+        public Type HandeledClass { get; set; }
+        public ClassOverview ClassOverview { get; set; }
+
+        public DbHandler(Type type)
         {
+            HandeledClass = type;
+            ClassOverview = ClassOverview.Dic[HandeledClass.Name];
+        }
+
+        public static ObservableCollection<T> GetDeepData<T>(DbContext dbContext)
+            where T : ProjectModel
+        {
+            var classOverview = ClassOverview.Dic[typeof(T).Name];
             var itemCollection = new ObservableCollection<T>();
-            var propertiesToInclude = typeof(T).GetPropertiesOfType(typeof(IProjectModel));
-            using (context)
-            {
-                IQueryable<T> query = context.Set<T>();
-                foreach (var property in propertiesToInclude)
+                IQueryable<T> query = dbContext.Set<T>();
+                foreach (var property in classOverview.PropertiesOfCoreClass)
                 {
                     query = query.Include(property.Name);
                 }
                 itemCollection = new ObservableCollection<T>(query);
-            }
             return itemCollection;
         }
 
-        public static IQueryable<IProjectModel> GetData(this DbContext context, Type type)
+        public static IQueryable<ProjectModel> GetData(DbContext dbContext, Type type)
         {
-            var method = typeof(DbContext).GetMethods().Single(p =>
+            var method = dbContext.GetType().GetMethods().Single(p =>
                 p.Name == nameof(DbContext.Set) && p.ContainsGenericParameters && !p.GetParameters().Any());
 
             method = method.MakeGenericMethod(type);
-
-            return method.Invoke(context, null) as IQueryable<IProjectModel>;
+            return (IQueryable<ProjectModel>)method.Invoke(dbContext, null) ;
         }
 
-        public static IQueryable<IProjectModel> GetDeepData(this DbContext context, Type type)
+        public static IQueryable<ProjectModel> GetDeepData(DbContext dbContext, Type type)
         {
+            var classOverview = ClassOverview.Dic[type.Name];
+            var query = GetData(dbContext, type);
 
-            var propertiesToInclude = type.GetPropertiesOfType(typeof(IProjectModel));
-
-            var query = context.GetData(type);
-
-            foreach (var property in propertiesToInclude)
+            foreach (var property in classOverview.PropertiesOfCoreClass)
             {
                 query = query.Include(property.PropertyType.Name);
             }

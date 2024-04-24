@@ -16,12 +16,12 @@ using WPFUsefullThings.View;
 namespace WPFUsefullThings.ViewModels
 {
     public class CollectionViewModel<T> : INotifyPropertyChangedPlus
-        where T : class, IProjectModel, new()
+        where T : class, ProjectModel, new()
     {
         private DbContext GetContext() => (DbContext)Activator.CreateInstance(_dbContextType);
         private readonly Type _dbContextType;
 
-        private readonly IProjectModel? _parent;
+        private readonly ProjectModel? _parent;
         
         public string Header { get; set; }
         
@@ -63,7 +63,7 @@ namespace WPFUsefullThings.ViewModels
         public ICommand ChangeItemCommand { get; }
         public ICommand DeleteItemCommand { get; }
 
-        public CollectionViewModel(IProjectModel parent, IEnumerable<IProjectModel> list, Type dbContextType) : this()
+        public CollectionViewModel(ProjectModel parent, IEnumerable<ProjectModel> list, Type dbContextType) : this()
         {
             _dbContextType = dbContextType;
             Header = typeof(T).GetClassDisplayName();

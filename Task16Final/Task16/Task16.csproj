@@ -38,4 +38,9 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="SQLScripts\" />
+    <Folder Include="ViewModel\" />
+  </ItemGroup>
+
 </Project>

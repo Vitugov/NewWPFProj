@@ -1,6 +1,7 @@
 ﻿using PropertyChanged;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,67 +13,30 @@ namespace Task16.Model
 {
 
     [DisplayNames("Заказ", "Заказы")]
-    public class Order : IProjectModel
+    public class Order : ProjectModel
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public int? Id { get; set; }
-
         [DisplayName("Клиент")]
-        public Client Client
-        { 
-            get;
-            set;
-        }
+        public Client Client { get; set; }
 
-        [DisplayName("Id товара")]
-        public int ProductId
-        { 
-            get;
-            set;
-        }
+        [DisplayName("Дата и время")]
+        public DateTime DateTime { get; set; }
 
-        [DisplayName("Название товара")]
-        [StringLength(50, MinimumLength = 2)]
-        public string ProductName { get; set; }
+        [DisplayName("Номенклатура")]
+        public ObservableCollection<OrderRow> Rows { get; set; }
 
-        public Order(Client client, int productId, string productName)
+
+        public Order(Client client)
         {
             Client = client;
-            ProductId = productId;
-            ProductName = productName;
         }
 
         public Order() { }
 
-        public void UpdateFrom(object obj)
+        protected override void UpdateDisplayName()
         {
-            var order = (Order)obj;
-            Id = order.Id;
-            Client = order.Client;
-            ProductId = order.ProductId;
-            ProductName = order.ProductName;
-        }
-
-        public object Clone()
-        {
-            return new Order
-            {
-                Id = Id,
-                Client = Client,
-                ProductId = ProductId,
-                ProductName = ProductName
-            };
-        }
-
-        public string ToViewString()
-        {
-            return $"{Client} {ProductId} {ProductName}";
-        }
-
-        public override string ToString()
-        {
-            return ToViewString();
+            DisplayName = $"Заказ {Client} от {DateTime}";
         }
     }
 }

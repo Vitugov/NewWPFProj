@@ -58,7 +58,7 @@ namespace WPFUsefullThings
                     horizontalPanel.Children.Add(textBox);
                 }
 
-                if (typeof(IProjectModel).IsAssignableFrom(property.PropertyType))
+                if (typeof(ProjectModel).IsAssignableFrom(property.PropertyType))
                 {
                     var comboBox = CreateComboBox(property.Name);
                     horizontalPanel.Children.Add(textBlock);

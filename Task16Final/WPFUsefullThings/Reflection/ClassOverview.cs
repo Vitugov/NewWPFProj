@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.SqlServer.Management.HadrModel;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,12 +9,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
 
-namespace WPFUsefullThings.Reflection
+namespace WPFUsefullThings
 {
     public class ClassOverview
     {
         public static Dictionary<string, ClassOverview> Dic { get; set; } = [];
-        public static Type CoreInterface { get; set; } = typeof(IProjectModel);
+        public static Type CoreClass { get; set; } = typeof(ProjectModel);
 
         public string Name { get; set; }
         public string DisplayNameSingular { get; set; }
@@ -23,7 +24,8 @@ namespace WPFUsefullThings.Reflection
         public PropertyInfo[] Properties { get; set; }
 
         public Dictionary<string, string> PropertiesDisplayNames { get; set; }
-        public PropertyInfo[] CoreInterfaceProperties { get; set; }
+
+        public PropertyInfo[] PropertiesOfCoreClass { get; set; }
         public bool HaveCollection { get; set; }
         public PropertyInfo? CollectionProperty { get; set; }
         public Type? CollectionGenericParameter { get; set; }
@@ -37,12 +39,12 @@ namespace WPFUsefullThings.Reflection
             DisplayNameSingular = displayAttribute.Singular;
             DisplayNamePlural = displayAttribute.Plural;
 
-            if (!CoreInterface.IsAssignableFrom(Type))
-                throw new Exception($"Type {Name} does not implement {CoreInterface} interface.");
+            if (!CoreClass.IsAssignableFrom(Type))
+                throw new Exception($"Type {Name} does not implement {CoreClass}.");
             Properties = Type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             PropertiesDisplayNames = GetPropertiesDisplayNamesDic();
 
-            CoreInterfaceProperties = GetPropertiesOfCoreInterface();
+            PropertiesOfCoreClass = GetPropertiesOfCoreClass();
             CollectionProperty = GetIEnumerableProperty();
             HaveCollection = CollectionProperty != null;
             CollectionGenericParameter = GetIEnumerableGeneric();
@@ -57,11 +59,16 @@ namespace WPFUsefullThings.Reflection
             Dic.Add(Name, this);
         }
 
-        private PropertyInfo[] GetPropertiesOfCoreInterface()
+        public ProjectModel CreateObject()
+        {
+            return (ProjectModel)Activator.CreateInstance(Type);
+        }
+        
+        private PropertyInfo[] GetPropertiesOfCoreClass()
         {
             var properties = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
             return properties
-                .Where(property => CoreInterface.IsAssignableFrom(property.PropertyType))
+                .Where(property => CoreClass.IsAssignableFrom(property.PropertyType))
                 .ToArray();
         }
 
@@ -111,9 +118,9 @@ namespace WPFUsefullThings.Reflection
                 .Select(i => i.GetGenericArguments()[0])
                 .FirstOrDefault();
 
-            if (elementType == null || !CoreInterface.IsAssignableFrom(elementType))
+            if (elementType == null || !CoreClass.IsAssignableFrom(elementType))
             {
-                throw new Exception($"There is no generic or generic does not implement {CoreInterface}");
+                throw new Exception($"There is no generic or generic does not implement {CoreClass}");
             }
 
             return elementType;

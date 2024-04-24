@@ -6,22 +6,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace WPFUsefullThings
 {
     public static class DictionaryBuilder
     {
-        public static Dictionary<string, ObservableCollection<KeyValuePair<string, IProjectModel>>>
+        public static Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>>
             GetDictionariesOfRelatedProperties(this DbContext context, Type type)
         {
-            var dic = new Dictionary<string, ObservableCollection<KeyValuePair<string, IProjectModel>>>();
-            var properties = type.GetPropertiesOfType(typeof(IProjectModel));
-            foreach (var property in properties)
+            var classOverview = ClassOverview.Dic[type.Name];
+            var dic = new Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>>();
+            foreach (var property in classOverview.PropertiesOfCoreClass)
             {
                 using (context)
                 {
-                    var set = context.GetDeepData(property.PropertyType);
-                    var keyValuePairSet = set.Select(obj => new KeyValuePair<string, IProjectModel>(obj.ToViewString() ?? "", obj));
-                    var collection = new ObservableCollection<KeyValuePair<string, IProjectModel>>(keyValuePairSet);
+                    var set = DbHandler.GetDeepData(context, property.PropertyType);
+                    var keyValuePairSet = set.Select(obj => new KeyValuePair<string, ProjectModel>(obj.ToString(), obj));
+                    var collection = new ObservableCollection<KeyValuePair<string, ProjectModel>>(keyValuePairSet);
                     dic[property.Name] = collection;
                 }
             }

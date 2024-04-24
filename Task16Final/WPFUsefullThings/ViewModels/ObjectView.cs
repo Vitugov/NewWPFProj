@@ -16,15 +16,15 @@ using PropertyChanged;
 namespace WPFUsefullThings
 {
     public class ObjectView<T> : INotifyPropertyChanged
-        where T : class, IProjectModel, new()
+        where T : class, ProjectModel, new()
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         public T Edit {  get; set; }
         public DynamicIsValid IsPropertyValid => _validation.IsValid;
         public bool IsValid => _validation.Validate();
 
-        private Dictionary<string, ObservableCollection<KeyValuePair<string, IProjectModel>>> _dic;
-        public Dictionary<string, ObservableCollection<KeyValuePair<string, IProjectModel>>> Dic
+        private Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> _dic;
+        public Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> Dic
         {
             get;
             set;
@@ -56,7 +56,7 @@ namespace WPFUsefullThings
 
             foreach (var property in Dic.Keys)
             {
-                var id = ((IProjectModel)typeof(T).GetProperty(property).GetValue(Edit)).Id;
+                var id = ((ProjectModel)typeof(T).GetProperty(property).GetValue(Edit)).Id;
                 var obj = Dic[property].Where(pair => pair.Value.Id == id).Select(pair => pair.Value).FirstOrDefault();
                 typeof(T).GetProperty(property).SetValue(Edit, obj);
             }

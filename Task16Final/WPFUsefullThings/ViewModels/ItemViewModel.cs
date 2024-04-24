@@ -13,14 +13,14 @@ using WPFUsefullThings;
 namespace WPFUsefullThings.ViewModels
 {
     public class ItemViewModel<T> : INotifyPropertyChangedPlus
-        where T : class, IProjectModel, new()
+        where T : class, ProjectModel, new()
     {
         private DbContext GetContext() => (DbContext)Activator.CreateInstance(_dbContextType);
         private readonly Type _dbContextType;
 
         public string Header { get; set; }
 
-        public Dictionary<string, ObservableCollection<KeyValuePair<string, IProjectModel>>> Dic => Item.Dic;
+        public Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> Dic => Item.Dic;
 
         private ObjectView<T> _item;
         public ObjectView<T> Item
