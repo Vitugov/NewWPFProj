@@ -11,12 +11,11 @@ using System.Windows.Input;
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using WPFUsefullThings.View;
 
-namespace WPFUsefullThings.ViewModels
+namespace WPFUsefullThings
 {
     public class CollectionViewModel<T> : INotifyPropertyChangedPlus
-        where T : class, ProjectModel, new()
+        where T : ProjectModel, new()
     {
         private DbContext GetContext() => (DbContext)Activator.CreateInstance(_dbContextType);
         private readonly Type _dbContextType;
@@ -66,7 +65,7 @@ namespace WPFUsefullThings.ViewModels
         public CollectionViewModel(ProjectModel parent, IEnumerable<ProjectModel> list, Type dbContextType) : this()
         {
             _dbContextType = dbContextType;
-            Header = typeof(T).GetClassDisplayName();
+            Header = ClassOverview.Dic[typeof(T).Name].DisplayNamePlural;
             _parent = parent;
 
             var table = list.Select(obj => obj.Id).ToList();
@@ -83,12 +82,11 @@ namespace WPFUsefullThings.ViewModels
         public CollectionViewModel(Type dbContextType) : this()
         {
             _dbContextType = dbContextType;
-            Header = typeof(T).GetClassDisplayName();
+            var classOverview = ClassOverview.Dic[typeof(T).Name];
+            Header = classOverview.DisplayNamePlural;
 
-            using (var context = GetContext())
-            {
-                ItemCollection = context.GetDeepData<T>();
-            }
+            var context = GetContext();
+            ItemCollection = context.GetDeepData<T>();
 
             ItemCollectionView = new ListCollectionView(ItemCollection);
         }

@@ -24,15 +24,17 @@ namespace Task16.Model
         public DateTime DateTime { get; set; }
 
         [DisplayName("Номенклатура")]
-        public ObservableCollection<OrderRow> Rows { get; set; }
+        public ObservableCollection<OrderRow> OrderRows { get; set; } = [];
 
 
-        public Order(Client client)
+        public Order(Client client, DateTime dateTime, List<OrderRow> orderRowList)
         {
             Client = client;
+            DateTime = dateTime;
+            OrderRows = new ObservableCollection<OrderRow>(orderRowList);
         }
 
-        public Order() { }
+        public Order() {}
 
         protected override void UpdateDisplayName()
         {

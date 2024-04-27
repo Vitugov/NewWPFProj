@@ -7,13 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using WPFUsefullThings;
 
-namespace WPFUsefullThings.ViewModels
+namespace WPFUsefullThings
 {
     public class ItemViewModel<T> : INotifyPropertyChangedPlus
-        where T : class, ProjectModel, new()
+        where T : ProjectModel, new()
     {
         private DbContext GetContext() => (DbContext)Activator.CreateInstance(_dbContextType);
         private readonly Type _dbContextType;
@@ -21,12 +22,21 @@ namespace WPFUsefullThings.ViewModels
         public string Header { get; set; }
 
         public Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> Dic => Item.Dic;
+        public Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> SubCollectionDic
+            => Item.SubCollectionDic;
 
         private ObjectView<T> _item;
         public ObjectView<T> Item
         {
             get => _item;
             set => Set(ref _item, value);
+        }
+
+        private ProjectModel _selectedCollectionItem;
+        public ProjectModel SelectedCollectionItem
+        {
+            get => _selectedCollectionItem;
+            set => Set(ref _selectedCollectionItem, value);
         }
 
         public DynamicIsValid IsValid => Item.IsPropertyValid;
@@ -38,7 +48,8 @@ namespace WPFUsefullThings.ViewModels
         {
             _dbContextType = contextType;
             var addition = item == null ? "*" : "";
-            Header = typeof(T).GetClassDisplayName() + addition;
+            
+            Header = ClassOverview.Dic[typeof(T).Name].DisplayNameSingular + addition;
             Item = new ObjectView<T>(item, itemCollection, contextType);
         }
 

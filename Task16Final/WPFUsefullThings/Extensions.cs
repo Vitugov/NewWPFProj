@@ -19,29 +19,35 @@ namespace WPFUsefullThings
         public static bool IsContainingString(this object obj, string str)
         {
             var objectProperties = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            if (str == null || str == "")
+            if (string.IsNullOrEmpty(str))
                 return true;
-            var result = objectProperties.Any(property => property.GetValue(obj).ToString().Contains(str));
+            var result = objectProperties
+                        .Any(property =>
+                        {
+                            var propertyValue = property.GetValue(obj);
+                            return propertyValue != null && propertyValue.ToString().ToLower().Contains(str.ToLower());
+                        });
+
             return result;
         }
 
-        public static Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>>
-            GetDictionariesOfRelatedProperties(this DbContext context, Type type)
-        {
-            var dic = new Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>>();
-            var properties = type.GetPropertiesOfType(typeof(ProjectModel));
-            foreach (var property in properties)
-            {
-                using (context)
-                {
-                    var set = context.GetDeepData(property.PropertyType);
-                    var keyValuePairSet = set.Select(obj => new KeyValuePair<string, ProjectModel>(obj.ToViewString() ?? "", obj));
-                    var collection = new ObservableCollection<KeyValuePair<string, ProjectModel>>(keyValuePairSet);
-                    dic[property.Name] = collection;
-                }
-            }
-            return dic;
-        }
+        //public static Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>>
+        //    GetDictionariesOfRelatedProperties(this DbContext context, Type type)
+        //{
+        //    var dic = new Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>>();
+        //    var properties = type.GetPropertiesOfType(typeof(ProjectModel));
+        //    foreach (var property in properties)
+        //    {
+        //        using (context)
+        //        {
+        //            var set = context.GetDeepData(property.PropertyType);
+        //            var keyValuePairSet = set.Select(obj => new KeyValuePair<string, ProjectModel>(obj.ToViewString() ?? "", obj));
+        //            var collection = new ObservableCollection<KeyValuePair<string, ProjectModel>>(keyValuePairSet);
+        //            dic[property.Name] = collection;
+        //        }
+        //    }
+        //    return dic;
+        //}
 
 
     }

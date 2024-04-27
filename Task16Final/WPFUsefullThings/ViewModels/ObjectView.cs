@@ -16,20 +16,20 @@ using PropertyChanged;
 namespace WPFUsefullThings
 {
     public class ObjectView<T> : INotifyPropertyChanged
-        where T : class, ProjectModel, new()
+        where T : ProjectModel, new()
     {
         public event PropertyChangedEventHandler? PropertyChanged;
-        public T Edit {  get; set; }
+        public T Edit
+        {   get;
+            set; }
         public DynamicIsValid IsPropertyValid => _validation.IsValid;
         public bool IsValid => _validation.Validate();
 
         private Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> _dic;
-        public Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> Dic
-        {
-            get;
-            set;
-        }
+        public Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> Dic { get; set; }
 
+        private Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> _subCollectionDic;
+        public Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> SubCollectionDic { get; set; } = [];
 
         private readonly ObservableCollection<T> _collection;
         private readonly Type _dbContextType;
@@ -49,17 +49,24 @@ namespace WPFUsefullThings
             _dbContextType = contextType;
             var context = (DbContext)Activator.CreateInstance(_dbContextType);
             Dic = context.GetDictionariesOfRelatedProperties(typeof(T));
+            var classOverview = ClassOverview.Dic[typeof(T).Name];
+            if (classOverview.HaveCollection)
+            {
+                var collectionGenericType = ClassOverview.Dic[typeof(T).Name].CollectionGenericParameter;
+                SubCollectionDic = context.GetDictionariesOfRelatedProperties(collectionGenericType);
+            }
+
             _original = original;
             Edit = (T)original.Clone();
             _collection = collection;
             _validation = new Validation<T>(Edit);
 
-            foreach (var property in Dic.Keys)
-            {
-                var id = ((ProjectModel)typeof(T).GetProperty(property).GetValue(Edit)).Id;
-                var obj = Dic[property].Where(pair => pair.Value.Id == id).Select(pair => pair.Value).FirstOrDefault();
-                typeof(T).GetProperty(property).SetValue(Edit, obj);
-            }
+            //foreach (var property in Dic.Keys)
+            //{
+            //    var id = ((ProjectModel)typeof(T).GetProperty(property).GetValue(Edit)).Id;
+            //    var obj = Dic[property].Where(pair => pair.Value.Id == id).Select(pair => pair.Value).FirstOrDefault();
+            //    typeof(T).GetProperty(property).SetValue(Edit, obj);
+            //}
         }
 
         public void Save()

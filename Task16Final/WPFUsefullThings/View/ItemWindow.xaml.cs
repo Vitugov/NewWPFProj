@@ -11,13 +11,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using WPFUsefullThings.ViewModels;
+using WPFUsefullThings;
 
-namespace WPFUsefullThings.View
+namespace WPFUsefullThings
 {
     /// <summary>
     /// Логика взаимодействия для ItemWindow.xaml
@@ -30,56 +31,63 @@ namespace WPFUsefullThings.View
         {
             InitializeComponent();
             DataContext = context;
+            Type = type;
             var stackPanel = WindowConstructor.InitializeItemWindow(type);
             baseGrid.Children.Add(stackPanel);
+            var classOverview = ClassOverview.Dic[type.Name];
+            var dataGrid = BuildDataGrid(Type);
+            stackPanel.Children.Add(dataGrid);
 
         }
 
         private DataGrid? BuildDataGrid(Type type)
         {
-            foreach (PropertyInfo property in type.GetProperties())
+            var classOverview = ClassOverview.Dic[type.Name];
+            if (classOverview.HaveCollection)
             {
-                if (typeof(ICollection).IsAssignableFrom(property.PropertyType))
+                var dataGrid = new DataGrid
                 {
-                    var dataGrid = new DataGrid
-                    {
-                        IsReadOnly = false,
+                    IsReadOnly = false,
+                };
 
-                    };
-
-                    Binding binding = new Binding("Item.Edit." + property.Name);
-                    binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-                    dataGrid.SetBinding(DataGrid.ItemsSourceProperty, binding);
-                    dataGrid.AutoGeneratingColumn += DataGrid_AutoGeneratingColumn;
-                    return dataGrid;
-                }
-
+                Binding binding = new Binding("Item.Edit." + classOverview.CollectionProperty.Name);
+                binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+                dataGrid.SetBinding(DataGrid.ItemsSourceProperty, binding);
+                dataGrid.AutoGeneratingColumn += DataGrid_AutoGeneratingColumn;
+                return dataGrid;
             }
+
+
             return null;
         }
 
         private void DataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
-            PropertyDescriptor propertyDescriptor = (PropertyDescriptor)e.PropertyDescriptor;
-            Type dataType = propertyDescriptor.PropertyType;
 
-            if (typeof(IProjectData).IsAssignableFrom(dataType))
+
+            if (typeof(ProjectModel).IsAssignableFrom(e.PropertyType))
             {
-                e.Column = new DataGridComboBoxColumn
+                var comboBoxColumn = new DataGridComboBoxColumn
                 {
-                    Header = propertyDescriptor.Name,
-                    SelectedValueBinding = new Binding("Item.Edit." + propertyDescriptor.Name)
-                    {
-                        UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
-                        Mode = BindingMode.TwoWay,
-                    },
+                    Header = e.PropertyName,
                     DisplayMemberPath = "Key",
                     SelectedValuePath = "Value",
-
-                    ItemsSource = ((ItemViewModel)DataContext).Dic[{propertyDescriptor.Name}]) // Метод для получения данных для ComboBox
                 };
+
+                var elementStyle = new Style(typeof(ComboBox));
+                elementStyle.Setters.Add(new Setter(ComboBox.DataContextProperty, DataContext));
+                elementStyle.Setters.Add(new Setter(ComboBox.ItemsSourceProperty, new Binding($"SubCollectionDic[{e.PropertyType.Name}]")));
+
+                var editingElementStyle = new Style(typeof(ComboBox));
+                editingElementStyle.Setters.Add(new Setter(ComboBox.DataContextProperty, DataContext));
+                editingElementStyle.Setters.Add(new Setter(ComboBox.ItemsSourceProperty, new Binding($"SubCollectionDic[{e.PropertyType.Name}]")));
+
+                comboBoxColumn.ElementStyle = elementStyle;
+                comboBoxColumn.EditingElementStyle = editingElementStyle;
+
+                e.Column = comboBoxColumn;
             }
         }
-
     }
+    
 }

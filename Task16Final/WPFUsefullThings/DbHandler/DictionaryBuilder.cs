@@ -12,19 +12,22 @@ namespace WPFUsefullThings
     public static class DictionaryBuilder
     {
         public static Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>>
-            GetDictionariesOfRelatedProperties(this DbContext context, Type type)
+            GetDictionariesOfRelatedProperties(this DbContext cont, Type type)
         {
             var classOverview = ClassOverview.Dic[type.Name];
             var dic = new Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>>();
             foreach (var property in classOverview.PropertiesOfCoreClass)
             {
-                using (context)
+                IQueryable<ProjectModel> set;
+                using (var context = DbContextCreator.Create())
                 {
-                    var set = DbHandler.GetDeepData(context, property.PropertyType);
+                    set = DbHandler.GetDeepData(context, property.PropertyType);
+
                     var keyValuePairSet = set.Select(obj => new KeyValuePair<string, ProjectModel>(obj.ToString(), obj));
                     var collection = new ObservableCollection<KeyValuePair<string, ProjectModel>>(keyValuePairSet);
-                    dic[property.Name] = collection;
+                    dic[property.PropertyType.Name] = collection;
                 }
+
             }
             return dic;
         }

@@ -15,6 +15,13 @@ namespace Task16.Model
         [DisplayName("Название товара")]
         [StringLength(50, MinimumLength = 2)]
         public string ProductName { get; set; }
+        
+        public Commodity(string  productName)
+        {
+            ProductName = productName;
+        }
+
+        public Commodity() {}
         protected override void UpdateDisplayName()
         {
             DisplayName = ProductName;

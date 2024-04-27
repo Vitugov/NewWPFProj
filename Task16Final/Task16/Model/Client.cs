@@ -43,7 +43,7 @@ namespace Task16.Model
             TelephoneNumber = telephoneNumber;
             Email = email;
         }
-        public Client() { }
+        public Client() {}
 
         
         public string ToViewString()

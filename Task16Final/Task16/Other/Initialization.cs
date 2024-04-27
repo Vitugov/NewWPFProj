@@ -25,28 +25,77 @@ namespace Task16.Other
             new Client("Вожняк", "Гжегож", "Генрик", "+48123456787", "grzegorz.wozniak@live.com")
         };
 
+        private static readonly List<Commodity> InitCommodities = new List<Commodity>
+        {
+            new("Модулятор Нейро-Интерфейса"),
+            new("Протез Кибернетической Руки"),
+            new("Плащ Оптической Камуфляжа"),
+            new("Квантовый ЦПУ"),
+            new("Инжектор Нанитов Здоровья"),
+            new("Молекулярное Лезвие"),
+            new("Антигравитационные Ботинки"),
+            new("Плазменная Винтовка"),
+            new("Ручка Голографической Маскировки"),
+            new("ЭМП Граната"),
+            new("Шифратор Цифрового Сознания"),
+            new("Очки Дополненной Реальности"),
+            new("Синтетическое Мышечное Волокно"),
+            new("Гель Дермальной Брони"),
+            new("Кольцо Электрошоковой Защиты"),
+            new("Стелс-Дрон"),
+            new("Портативное Устройство Взлома"),
+            new("Беспроводной Пауэрбанк"),
+            new("Отмычка Биометрических Замков"),
+            new("Генератор Личного Силового Поля")
+        };
+        private static readonly List<OrderRow> InitOrderRows = new List<OrderRow>
+        {
+            new(InitCommodities[0], 14, 2893.82M),
+            new(InitCommodities[1], 2, 857.73M),
+            new(InitCommodities[2], 19, 217.88M),
+            new(InitCommodities[3], 11, 2624.39M),
+            new(InitCommodities[4], 8, 1845.21M),
+            new(InitCommodities[5], 5, 1990.98M),
+            new(InitCommodities[6], 16, 1682.75M),
+            new(InitCommodities[7], 4, 1597.36M),
+            new(InitCommodities[8], 20, 483.05M),
+            new(InitCommodities[9], 7, 2821.03M),
+            new(InitCommodities[10], 3, 2228.19M),
+            new(InitCommodities[11], 18, 2735.92M),
+            new(InitCommodities[12], 9, 2396.16M),
+            new(InitCommodities[13], 17, 1386.47M),
+            new(InitCommodities[14], 6, 679.34M),
+            new(InitCommodities[15], 1, 1483.27M),
+            new(InitCommodities[16], 15, 2742.68M),
+            new(InitCommodities[17], 13, 1774.50M),
+            new(InitCommodities[18], 10, 998.84M),
+            new(InitCommodities[19], 12, 2150.19M),
+        };
+
+
         private static readonly List<Order> InitOrders = new List<Order>
         {
-            new Order(InitClients[0], 101, "Модулятор Нейро-Интерфейса"),
-            new Order(InitClients[1], 102, "Протез Кибернетической Руки"),
-            new Order(InitClients[2], 103, "Плащ Оптической Камуфляжа"),
-            new Order(InitClients[3], 104, "Квантовый ЦПУ"),
-            new Order(InitClients[4], 105, "Инжектор Нанитов Здоровья"),
-            new Order(InitClients[5], 106, "Молекулярное Лезвие"),
-            new Order(InitClients[6], 107, "Антигравитационные Ботинки"),
-            new Order(InitClients[7], 108, "Плазменная Винтовка"),
-            new Order(InitClients[8], 109, "Ручка Голографической Маскировки"),
-            new Order(InitClients[9], 110, "ЭМП Граната"),
-            new Order(InitClients[0], 111, "Шифратор Цифрового Сознания"),
-            new Order(InitClients[1], 112, "Очки Дополненной Реальности"),
-            new Order(InitClients[2], 113, "Синтетическое Мышечное Волокно"),
-            new Order(InitClients[3], 114, "Гель Дермальной Брони"),
-            new Order(InitClients[4], 115, "Кольцо Электрошоковой Защиты"),
-            new Order(InitClients[5], 116, "Стелс-Дрон"),
-            new Order(InitClients[6], 117, "Портативное Устройство Взлома"),
-            new Order(InitClients[7], 118, "Беспроводной Пауэрбанк"),
-            new Order(InitClients[8], 119, "Отмычка Биометрических Замков"),
-            new Order(InitClients[9], 120, "Генератор Личного Силового Поля")
+            new Order(InitClients[2], new DateTime(2024, 1, 3, 14, 22, 15), [InitOrderRows[0]]),
+            new Order(InitClients[1], new DateTime(2024, 2, 5, 9, 48, 30), [InitOrderRows[1]]),
+            new Order(InitClients[4], new DateTime(2024, 2, 15, 11, 6, 45), [InitOrderRows[2]]),
+            new Order(InitClients[0], new DateTime(2024, 3, 10, 13, 31, 5), [InitOrderRows[3]]),
+            new Order(InitClients[3], new DateTime(2024, 1, 21, 16, 12, 20), [InitOrderRows[4]]),
+            new Order(InitClients[5], new DateTime(2024, 4, 2, 20, 18, 33), [InitOrderRows[5]]),
+            new Order(InitClients[7], new DateTime(2024, 3, 27, 15, 54, 29), [InitOrderRows[6]]),
+            new Order(InitClients[6], new DateTime(2024, 4, 12, 17, 46, 18), [InitOrderRows[7]]),
+            new Order(InitClients[8], new DateTime(2024, 2, 22, 18, 30, 48), [InitOrderRows[8]]),
+            new Order(InitClients[9], new DateTime(2024, 1, 12, 10, 59, 56), [InitOrderRows[9]]),
+            new Order(InitClients[1], new DateTime(2024, 3, 3, 12, 2, 17), [InitOrderRows[10]]),
+            new Order(InitClients[0], new DateTime(2024, 2, 18, 22, 14, 11), [InitOrderRows[11]]),
+            new Order(InitClients[2], new DateTime(2024, 4, 25, 19, 27, 34), [InitOrderRows[12]]),
+            new Order(InitClients[4], new DateTime(2024, 1, 27, 7, 39, 22), [InitOrderRows[13]]),
+            new Order(InitClients[3], new DateTime(2024, 4, 16, 14, 53, 8), [InitOrderRows[14]]),
+            new Order(InitClients[5], new DateTime(2024, 2, 11, 23, 12, 56), [InitOrderRows[15]]),
+            new Order(InitClients[7], new DateTime(2024, 1, 17, 6, 25, 41), [InitOrderRows[16]]),
+            new Order(InitClients[6], new DateTime(2024, 3, 22, 12, 40, 33), [InitOrderRows[17]]),
+            new Order(InitClients[8], new DateTime(2024, 1, 30, 21, 18, 22), [InitOrderRows[18]]),
+            new Order(InitClients[9], new DateTime(2024, 4, 10, 15, 55, 29), [InitOrderRows[19]])
+
         };
 
         static Initialization()
@@ -61,9 +110,11 @@ namespace Task16.Other
                 db.Database.EnsureCreated();
 
                 db.Clients.AddRange(InitClients);
+                db.Commodities.AddRange(InitCommodities);
+                db.OrderRows.AddRange(InitOrderRows);
                 db.Orders.AddRange(InitOrders);
                 db.SaveChanges();
             }
         }
-    } 
+    }
 }

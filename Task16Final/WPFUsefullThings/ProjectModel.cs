@@ -8,7 +8,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using WPFUsefullThings.Reflection;
 
 namespace WPFUsefullThings
 {
@@ -20,7 +19,7 @@ namespace WPFUsefullThings
         [DisplayName("Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
         public string DisplayName { get; set; } = "";
-        protected virtual void UpdateFrom(ProjectModel obj)
+        public virtual void UpdateFrom(ProjectModel obj)
         {
             if (obj == null || this.GetType() != obj.GetType())
             {
@@ -90,6 +89,30 @@ namespace WPFUsefullThings
                 clone.OnPropertyChanged(property.Name);
             }
             return clone;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj == null || obj.GetType() != this.GetType())
+                return false;
+
+            ProjectModel other = (ProjectModel)obj;
+            return this.Id == other.Id; // Сравниваем только по GUID
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
+
+        public static bool operator ==(ProjectModel me, ProjectModel other)
+        {
+            return Equals(me, other);
+        }
+
+        public static bool operator !=(ProjectModel me, ProjectModel other)
+        {
+            return !Equals(me, other);
         }
     }
 }

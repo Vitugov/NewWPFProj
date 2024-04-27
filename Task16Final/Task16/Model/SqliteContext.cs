@@ -22,6 +22,7 @@ namespace Task16.Model
         {
             optionsBuilder
                 .UseSqlite("Data Source=CyberStore.db");
+            //this.Orders.Include(a).ThenInclude(a)
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -35,7 +35,7 @@ namespace WPFUsefullThings
                     Margin = new Thickness(5) // небольшой отступ
                 };
 
-                if ((property.PropertyType.IsValueType && !property.PropertyType.IsEnum && !property.PropertyType.IsCollection())
+                if ((property.PropertyType.IsValueType && !property.PropertyType.IsEnum && !typeof(IEnumerable).IsAssignableFrom(type))
                     || property.PropertyType == typeof(string)) // проверка на тип свойства
                 {
                     // Создание TextBox для значения свойства

@@ -13,9 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Task16.Model;
 using Task16.Other;
-using Task16.ViewModel;
 using WPFUsefullThings;
-using WPFUsefullThings.ViewModels;
+
 
 namespace Task16.View
 {
@@ -31,7 +30,8 @@ namespace Task16.View
         {
             OpenClientCollectionWindow = new RelayCommand(obj => Execute_OpenClientCollectionWindow());
             OpenOrderCollectionWindow = new RelayCommand(obj => Execute_OpenOrderCollectionWindow());
-            //Initialization.Instance.Init();
+            DbContextCreator.SetDbContextType(typeof(SqliteContext));
+            Initialization.Instance.Init();
             InitializeComponent();
             DataContext = this;
         }

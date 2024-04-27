@@ -15,6 +15,8 @@ namespace WPFUsefullThings
     {
         public static Dictionary<string, ClassOverview> Dic { get; set; } = [];
         public static Type CoreClass { get; set; } = typeof(ProjectModel);
+        public static Type[] AllDerivedClasses { get; set; }
+
 
         public string Name { get; set; }
         public string DisplayNameSingular { get; set; }
@@ -31,6 +33,18 @@ namespace WPFUsefullThings
         public Type? CollectionGenericParameter { get; set; }
         public ClassOverview? CollectionGenericClassOverview { get; set; }
 
+        static ClassOverview()
+        {
+            AllDerivedClasses = GetAllDerivedClasses();
+            if (AllDerivedClasses.Any())
+            {
+                foreach (var derivedClass in AllDerivedClasses)
+                {
+                    _ = new ClassOverview(derivedClass);
+                }
+            }
+        }
+        
         public ClassOverview(Type type)
         {
             Type = type;
@@ -47,22 +61,49 @@ namespace WPFUsefullThings
             PropertiesOfCoreClass = GetPropertiesOfCoreClass();
             CollectionProperty = GetIEnumerableProperty();
             HaveCollection = CollectionProperty != null;
-            CollectionGenericParameter = GetIEnumerableGeneric();
-            if (CollectionGenericParameter != null)
+            if (HaveCollection)
             {
+                CollectionGenericParameter = GetIEnumerableGeneric();
+
                 if (!Dic.ContainsKey(CollectionGenericParameter.Name))
                 {
                     new ClassOverview(CollectionGenericParameter);
                 }
                 CollectionGenericClassOverview = Dic[CollectionGenericParameter.Name];
             }
-            Dic.Add(Name, this);
+            if (!Dic.ContainsKey(Name))
+            {
+                Dic[Name] = this;
+            }
+        }
+
+        private static Type[] GetAllDerivedClasses()
+        {
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+            // Находим все типы, которые являются наследниками ProjectModel во всех сборках
+            var allDerivedTypes = assemblies.SelectMany(assembly =>
+            {
+                try
+                {
+                    return assembly.GetTypes()
+                        .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(CoreClass));
+                }
+                catch (ReflectionTypeLoadException ex)
+                {
+                    // В случае ошибок загрузки типа, возвращаем только успешно загруженные типы
+                    return ex.Types.Where(t => t != null && t.IsClass && !t.IsAbstract && t.IsSubclassOf(CoreClass));
+                }
+            }).ToArray();
+
+            return allDerivedTypes;
         }
 
         public ProjectModel CreateObject()
         {
             return (ProjectModel)Activator.CreateInstance(Type);
         }
+
         
         private PropertyInfo[] GetPropertiesOfCoreClass()
         {
@@ -129,7 +170,7 @@ namespace WPFUsefullThings
         private IEnumerable<PropertyInfo> GetCollectionProperties()
         {
             var result = Properties
-                .Where(property => property.PropertyType.GetInterfaces().Any(i => i == typeof(IEnumerable) && i != typeof(string)));
+                .Where(property => property.PropertyType.GetInterfaces().Any(i => i == typeof(IEnumerable) && property.PropertyType != typeof(string)));
             if (result.Count() > 1)
                 throw new Exception($"Class {Type.FullName} consists more than one collection.");
             return result;
