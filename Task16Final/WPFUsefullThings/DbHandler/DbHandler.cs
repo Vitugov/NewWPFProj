@@ -6,8 +6,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Linq.Dynamic.Core;
+//using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.Query;
+using System.Linq.Dynamic.Core;
 
 namespace WPFUsefullThings
 {
@@ -27,16 +29,31 @@ namespace WPFUsefullThings
                 query = query.Include(classOverview.CollectionProperty.Name);
                 foreach (var property in classOverview.CollectionGenericClassOverview.PropertiesOfCoreClass)
                 {
-                    //string dynamicLambda = $"d => d.{classOverview.CollectionProperty.Name}.Select(e => e.{property.Name})";
+                    
+                    //Func<IQueryable<T>, IIncludableQueryable<T, object>> func = i => i.Include(i => i.prop1).ThenInclude(t => t.innerprop1);
+                    string dynamicLambda = $"d => d.Include(k => k.{classOverview.CollectionProperty.Name}).ThenInclude(e => e.{property.Name})";
+                    var path = $"d => d.{classOverview.CollectionProperty.Name}.Select(e => e.{property.Name})";
+                    
+                    var elementType = typeof(T);
+                    var resultType = property.PropertyType;//typeof(ProjectModel);
 
-                    //var elementType = typeof(T);
-                    //var resultType = property.PropertyType;//typeof(ProjectModel);
+                    // Парсинг динамического лямбда-выражения
+                    var dynamicExpression = DynamicExpressionParser.ParseLambda(
+                        new ParsingConfig(), true, elementType, resultType, path);
+                    var expr = Expression.Lambda() // TODO!!!!!!!!!!!
+                    var delegat = (Func<IQueryable<T>, IIncludableQueryable<T, object>>)dynamicExpression.Compile();
+                    query = delegat(query);
 
-                    //// Парсинг динамического лямбда-выражения
-                    //var dynamicExpression = DynamicExpressionParser.ParseLambda(
-                    //    new ParsingConfig(), true, elementType, resultType, dynamicLambda);
                     //(Expression<Func<T, ProjectModel>>)dynamicExpression;
                     //query = query.Include($"d => d.{classOverview.CollectionProperty.Name}").ThenInclude($"e => e.{ property.Name})");
+                    //var formatExpr = Expression.Call(
+                    //formatStaticMethod,
+                    //Expression.Constant(parsed.format, typeof(string)),
+                    //formatParamsArrayExpr);
+
+                    //var resultExpr = Expression.Lambda<Func<T, string>>(
+                    //    formatExpr,
+                    //    argumentExpression);
                 }
             }
             using (var context = DbContextCreator.Create())
@@ -77,7 +94,7 @@ namespace WPFUsefullThings
                     //query = query.Include(e => EF.Property<IEnumerable<ProjectModel>>(e, classOverview.CollectionProperty.Name)
                     //    .Select(x => EF.Property<ProjectModel>(x, property.Name)));
 
-
+                    //query.Include(classOverview.CollectionProperty.Name).ThenInclude(property.Name);
                     // Строка лямбда-выражения с динамическими именами свойств
                     //string dynamicLambda = $"d => d.{classOverview.CollectionProperty.Name}.Select(e => e.{property.Name})";
 
@@ -97,5 +114,22 @@ namespace WPFUsefullThings
             }
             return query;
         }
+
+        ///////////////////////////////////////////////////////////////
+        //public static Func<IQueryable<T>, IIncludableQueryable<T, object>> returnsomethig
+        //{
+
+
+        //}
+        //Func<IQueryable<T>, IIncludableQueryable<T, object>> func = i => i.Include(i => i.prop1).ThenInclude(t => t.innerprop1);
+        //string dynamicLambda = $"d => d.{classOverview.CollectionProperty.Name}.Select(e => e.{property.Name})";
+
+        //var elementType = typeof(T);
+        //var resultType = property.PropertyType;//typeof(ProjectModel);
+
+        //// Парсинг динамического лямбда-выражения
+        //var dynamicExpression = DynamicExpressionParser.ParseLambda(
+        //    new ParsingConfig(), true, elementType, resultType, dynamicLambda);
+        //var delegat = (Func<IQueryable<T>, IIncludableQueryable<T, object>>)dynamicExpression.Compile();
     }
 }

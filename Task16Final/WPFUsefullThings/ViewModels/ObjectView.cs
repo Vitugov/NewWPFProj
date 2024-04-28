@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using PropertyChanged;
+using System.Collections;
 
 namespace WPFUsefullThings
 {
@@ -56,6 +57,24 @@ namespace WPFUsefullThings
                 var collectionGenericType = ClassOverview.Dic[typeof(T).Name].CollectionGenericParameter;
                 SubCollectionDic = DbContextCreator.Create().GetDictionariesOfRelatedProperties(collectionGenericType);
             }
+
+            //var contextS = DbContextCreator.Create();
+            //using (contextS)
+            //{
+            //    var collectionS = contextS.Entry(original).Collection(classOverview.CollectionProperty.Name);
+
+            //    foreach (var item in collectionS.CurrentValue)
+            //    {
+            //        var entry = contextS.Entry(item);
+            //        entry.State = EntityState.Unchanged;
+            //        foreach (var property in classOverview.CollectionGenericClassOverview.PropertiesOfCoreClass)
+            //        {
+            //            entry.Reference(property.Name)..Load();  // Используйте Reference для одиночных навигационных свойств
+            //                                                 // Или entry.Collection(property.Name).Load(); если это коллекционные свойства
+            //        }
+            //    }
+            //}
+
 
             _original = original;
             Edit = (T)original.Clone();
