@@ -13,7 +13,7 @@ namespace Task16.Model
     public class OrderRow : ProjectModel
     {
         [DisplayName("Наименование товара")]
-        public Commodity Commodity { get; set; }
+        public virtual Commodity Commodity { get; set; }
         
         [DisplayName("Количество")]
         public int Quantity { get; set; }

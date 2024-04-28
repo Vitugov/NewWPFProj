@@ -21,7 +21,7 @@ namespace WPFUsefullThings
                 IQueryable<ProjectModel> set;
                 using (var context = DbContextCreator.Create())
                 {
-                    set = DbHandler.GetDeepData(context, property.PropertyType);
+                    set = context.GetDeepData(property.PropertyType);
 
                     var keyValuePairSet = set.Select(obj => new KeyValuePair<string, ProjectModel>(obj.ToString(), obj));
                     var collection = new ObservableCollection<KeyValuePair<string, ProjectModel>>(keyValuePairSet);

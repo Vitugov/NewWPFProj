@@ -18,13 +18,13 @@ namespace Task16.Model
         public event PropertyChangedEventHandler? PropertyChanged;
 
         [DisplayName("Клиент")]
-        public Client Client { get; set; }
+        public virtual Client Client { get; set; }
 
         [DisplayName("Дата и время")]
         public DateTime DateTime { get; set; }
 
         [DisplayName("Номенклатура")]
-        public ObservableCollection<OrderRow> OrderRows { get; set; } = [];
+        public virtual ObservableCollection<OrderRow> OrderRows { get; set; } = [];
 
 
         public Order(Client client, DateTime dateTime, List<OrderRow> orderRowList)

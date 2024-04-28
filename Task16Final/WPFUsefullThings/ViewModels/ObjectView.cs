@@ -40,20 +40,21 @@ namespace WPFUsefullThings
 
         public ObjectView(T? original, ObservableCollection<T> collection, Type contextType)
         {
+            IfNotADbContextThrowExeption(contextType);
+            _dbContextType = contextType;
+            Dic = DbContextCreator.Create().GetDictionariesOfRelatedProperties(typeof(T));
+            var classOverview = ClassOverview.Dic[typeof(T).Name];
             if (original == null)
             {
                 _isNew = true;
                 original = new T();
             }
-            IfNotADbContextThrowExeption(contextType);
-            _dbContextType = contextType;
-            var context = (DbContext)Activator.CreateInstance(_dbContextType);
-            Dic = context.GetDictionariesOfRelatedProperties(typeof(T));
-            var classOverview = ClassOverview.Dic[typeof(T).Name];
+
+
             if (classOverview.HaveCollection)
             {
                 var collectionGenericType = ClassOverview.Dic[typeof(T).Name].CollectionGenericParameter;
-                SubCollectionDic = context.GetDictionariesOfRelatedProperties(collectionGenericType);
+                SubCollectionDic = DbContextCreator.Create().GetDictionariesOfRelatedProperties(collectionGenericType);
             }
 
             _original = original;

@@ -6,6 +6,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
 
 namespace WPFUsefullThings
 {
@@ -25,9 +27,16 @@ namespace WPFUsefullThings
                 query = query.Include(classOverview.CollectionProperty.Name);
                 foreach (var property in classOverview.CollectionGenericClassOverview.PropertiesOfCoreClass)
                 {
-                    //var path = $"{classOverview.CollectionProperty.Name}.SelectMany(e => e.{property.Name})";
-                    //query = query.Include(e => (IEnumerable<ProjectModel>)e, classOverview.CollectionProperty.Name)
-                    //              .Select(x => EF.Property<ProjectModel>(x, property.Name)));
+                    //string dynamicLambda = $"d => d.{classOverview.CollectionProperty.Name}.Select(e => e.{property.Name})";
+
+                    //var elementType = typeof(T);
+                    //var resultType = property.PropertyType;//typeof(ProjectModel);
+
+                    //// Парсинг динамического лямбда-выражения
+                    //var dynamicExpression = DynamicExpressionParser.ParseLambda(
+                    //    new ParsingConfig(), true, elementType, resultType, dynamicLambda);
+                    //(Expression<Func<T, ProjectModel>>)dynamicExpression;
+                    //query = query.Include($"d => d.{classOverview.CollectionProperty.Name}").ThenInclude($"e => e.{ property.Name})");
                 }
             }
             using (var context = DbContextCreator.Create())
@@ -42,17 +51,17 @@ namespace WPFUsefullThings
                 p.Name == nameof(DbContext.Set) && p.ContainsGenericParameters && !p.GetParameters().Any());
 
             method = method.MakeGenericMethod(type);
-            using (var context = DbContextCreator.Create())
-            {
+            //using (dbContext)
+            //{
                 var result = (IQueryable<ProjectModel>)method.Invoke(dbContext, null);
                 return result;
-            }
+            //}
         }
 
         public static IQueryable<ProjectModel> GetDeepData(this DbContext dbContext, Type type)
         {
             var classOverview = ClassOverview.Dic[type.Name];
-            var query = GetData(dbContext, type);
+            var query = dbContext.GetData(type);
 
             foreach (var property in classOverview.PropertiesOfCoreClass)
             {
@@ -63,9 +72,27 @@ namespace WPFUsefullThings
                 query = query.Include(classOverview.CollectionProperty.Name);
                 foreach (var property in classOverview.CollectionGenericClassOverview.PropertiesOfCoreClass)
                 {
-                    //var path = $"d => d.{classOverview.CollectionProperty.Name}.SelectMany(e => e.{property.Name})";
+                    //var k = DynamicExpressionParser.ParseLambda()
+                    //var path = $"d => d.{classOverview.CollectionProperty.Name}.Select(e => e.{property.Name})";
                     //query = query.Include(e => EF.Property<IEnumerable<ProjectModel>>(e, classOverview.CollectionProperty.Name)
                     //    .Select(x => EF.Property<ProjectModel>(x, property.Name)));
+
+
+                    // Строка лямбда-выражения с динамическими именами свойств
+                    //string dynamicLambda = $"d => d.{classOverview.CollectionProperty.Name}.Select(e => e.{property.Name})";
+
+
+                    //var elementType = type;
+                    //var resultType = property.PropertyType;
+
+                    //// Парсинг динамического лямбда-выражения
+                    //var dynamicExpression = DynamicExpressionParser.ParseLambda(
+                    //    new ParsingConfig(), true, elementType, resultType, dynamicLambda);
+                    //var expression = dynamicExpression as Expression<Func<ProjectModel, ProjectModel>>;
+                    //query = query.Include((Expression<Func<ProjectModel,ProjectModel>>)dynamicExpression);
+
+                    // Дополнительно: использование полученного выражения (нужен контекст использования)
+                    // Пример использования был бы с IQueryable<DataItem> или подобным
                 }
             }
             return query;
