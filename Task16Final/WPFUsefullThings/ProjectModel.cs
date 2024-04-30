@@ -17,8 +17,13 @@ namespace WPFUsefullThings
         
         [Key]
         [DisplayName("Id")]
+        [Invisible()]
         public Guid Id { get; set; } = Guid.NewGuid();
+        
+        [Invisible()]
         public string DisplayName { get; set; } = "";
+
+        public ProjectModel() { }
         public virtual void UpdateFrom(ProjectModel obj)
         {
             if (obj == null || this.GetType() != obj.GetType())
@@ -84,7 +89,10 @@ namespace WPFUsefullThings
                 }
                 else
                 {
-                    property.SetValue(clone, value);
+                    if (property.CanWrite)
+                    {
+                        property.SetValue(clone, value);
+                    }
                 }
                 clone.OnPropertyChanged(property.Name);
             }

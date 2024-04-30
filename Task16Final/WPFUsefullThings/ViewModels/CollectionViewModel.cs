@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WPFUsefullThings
 {
@@ -62,32 +63,17 @@ namespace WPFUsefullThings
         public ICommand ChangeItemCommand { get; }
         public ICommand DeleteItemCommand { get; }
 
-        public CollectionViewModel(ProjectModel parent, IEnumerable<ProjectModel> list, Type dbContextType) : this()
-        {
-            _dbContextType = dbContextType;
-            Header = ClassOverview.Dic[typeof(T).Name].DisplayNamePlural;
-            _parent = parent;
-
-            var table = list.Select(obj => obj.Id).ToList();
-
-            using (var context = GetContext())
-            {
-                var query = context.GetDeepData<T>().Where(o => table.Contains(o.Id));
-                ItemCollection = new ObservableCollection<T>(query);
-            }
-
-            ItemCollectionView = new ListCollectionView(ItemCollection);
-        }
-
         public CollectionViewModel(Type dbContextType) : this()
         {
             _dbContextType = dbContextType;
             var classOverview = ClassOverview.Dic[typeof(T).Name];
             Header = classOverview.DisplayNamePlural;
 
-            var context = GetContext();
-            ItemCollection = context.GetDeepData<T>();
-
+            using (var context = GetContext())
+            {
+                var query = context.ShallowSet<T>();
+                ItemCollection = new ObservableCollection<T>(query);
+            }
             ItemCollectionView = new ListCollectionView(ItemCollection);
         }
 

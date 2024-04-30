@@ -22,6 +22,7 @@ namespace WPFUsefullThings
         public string DisplayNameSingular { get; set; }
         public string DisplayNamePlural { get; set; }
 
+        public bool IsSubClass { get; set; }
         public Type Type { get; set; }
         public PropertyInfo[] Properties { get; set; }
 
@@ -29,6 +30,7 @@ namespace WPFUsefullThings
 
         public PropertyInfo[] PropertiesOfCoreClass { get; set; }
         public bool HaveCollection { get; set; }
+        public bool IsCollectionSubClass { get; set; }
         public PropertyInfo? CollectionProperty { get; set; }
         public Type? CollectionGenericParameter { get; set; }
         public ClassOverview? CollectionGenericClassOverview { get; set; }
@@ -40,7 +42,10 @@ namespace WPFUsefullThings
             {
                 foreach (var derivedClass in AllDerivedClasses)
                 {
-                    _ = new ClassOverview(derivedClass);
+                    if (!Dic.ContainsKey(derivedClass.Name))
+                    {
+                        _ = new ClassOverview(derivedClass);
+                    }
                 }
             }
         }
@@ -49,6 +54,7 @@ namespace WPFUsefullThings
         {
             Type = type;
             Name = type.Name;
+            IsSubClass = GetIsSubClass(type);
             var displayAttribute = GetClassDisplayName();
             DisplayNameSingular = displayAttribute.Singular;
             DisplayNamePlural = displayAttribute.Plural;
@@ -64,6 +70,7 @@ namespace WPFUsefullThings
             if (HaveCollection)
             {
                 CollectionGenericParameter = GetIEnumerableGeneric();
+                IsCollectionSubClass = GetIsSubClass(CollectionGenericParameter);
 
                 if (!Dic.ContainsKey(CollectionGenericParameter.Name))
                 {
@@ -139,6 +146,16 @@ namespace WPFUsefullThings
             return displayNamesAttribute;
         }
 
+        private bool GetIsSubClass(Type type)
+        {
+            var subClassAttribute = type.GetCustomAttribute<SubClassAttribute>();
+            if (subClassAttribute == null)
+            {
+                return false;
+            }
+            return subClassAttribute.IsSubClass;
+        }
+
         private PropertyInfo? GetIEnumerableProperty()
         {
             var propertyWithCollection = GetCollectionProperties();
@@ -174,6 +191,17 @@ namespace WPFUsefullThings
             if (result.Count() > 1)
                 throw new Exception($"Class {Type.FullName} consists more than one collection.");
             return result;
+        }
+
+        public bool HaveSubCollection => HaveCollection && IsCollectionSubClass;
+
+        public IList GetCollectionFor(object obj)
+        {
+            if (!HaveSubCollection)
+                throw new Exception($"Class {Type.Name} has no SubCollection");
+            var collectionProperty = Type.GetProperty(CollectionProperty.Name);
+            var collection = (IList)collectionProperty.GetValue(obj);
+            return collection;
         }
     }
 }

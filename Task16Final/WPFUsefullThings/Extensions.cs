@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,24 +32,9 @@ namespace WPFUsefullThings
             return result;
         }
 
-        //public static Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>>
-        //    GetDictionariesOfRelatedProperties(this DbContext context, Type type)
-        //{
-        //    var dic = new Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>>();
-        //    var properties = type.GetPropertiesOfType(typeof(ProjectModel));
-        //    foreach (var property in properties)
-        //    {
-        //        using (context)
-        //        {
-        //            var set = context.GetDeepData(property.PropertyType);
-        //            var keyValuePairSet = set.Select(obj => new KeyValuePair<string, ProjectModel>(obj.ToViewString() ?? "", obj));
-        //            var collection = new ObservableCollection<KeyValuePair<string, ProjectModel>>(keyValuePairSet);
-        //            dic[property.Name] = collection;
-        //        }
-        //    }
-        //    return dic;
-        //}
-
-
+        private static object GetInstance(this Type type)
+        {
+            return Activator.CreateInstance(type);
+        }
     }
 }

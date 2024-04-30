@@ -18,16 +18,17 @@ namespace WPFUsefullThings
             var dic = new Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>>();
             foreach (var property in classOverview.PropertiesOfCoreClass)
             {
-                IQueryable<ProjectModel> set;
                 using (var context = DbContextCreator.Create())
                 {
-                    set = context.GetDeepData(property.PropertyType);
+                    var set = context.Set(property.PropertyType);
 
-                    var keyValuePairSet = set.Select(obj => new KeyValuePair<string, ProjectModel>(obj.ToString(), obj));
+                    var keyValuePairSet = set
+                        .Select(obj => new KeyValuePair<string, ProjectModel>(obj.ToString(), obj))
+                        .ToList()
+                        .OrderBy(pair => pair.Key);
                     var collection = new ObservableCollection<KeyValuePair<string, ProjectModel>>(keyValuePairSet);
                     dic[property.PropertyType.Name] = collection;
                 }
-
             }
             return dic;
         }

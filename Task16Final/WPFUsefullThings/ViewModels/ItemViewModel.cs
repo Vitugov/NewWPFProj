@@ -10,10 +10,11 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using WPFUsefullThings;
+using WPFUsefullThings.ViewModels;
 
 namespace WPFUsefullThings
 {
-    public class ItemViewModel<T> : INotifyPropertyChangedPlus
+    public class ItemViewModel<T> : INotifyPropertyChangedPlus, IItemViewModel
         where T : ProjectModel, new()
     {
         private DbContext GetContext() => (DbContext)Activator.CreateInstance(_dbContextType);

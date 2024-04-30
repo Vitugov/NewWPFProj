@@ -37,56 +37,39 @@ namespace WPFUsefullThings
         private readonly T _original;
         private readonly bool _isNew = false;
         private readonly Validation<T> _validation;
+        private readonly ClassOverview _classOverview;
 
 
         public ObjectView(T? original, ObservableCollection<T> collection, Type contextType)
         {
             IfNotADbContextThrowExeption(contextType);
             _dbContextType = contextType;
+            _classOverview = ClassOverview.Dic[typeof(T).Name];
             Dic = DbContextCreator.Create().GetDictionariesOfRelatedProperties(typeof(T));
-            var classOverview = ClassOverview.Dic[typeof(T).Name];
+            
             if (original == null)
             {
                 _isNew = true;
-                original = new T();
+                _original = new T();
             }
-
-
-            if (classOverview.HaveCollection)
+            else
             {
-                var collectionGenericType = ClassOverview.Dic[typeof(T).Name].CollectionGenericParameter;
+                using (var context = DbContextCreator.Create())
+                {
+                    var query = context.DeepSet<T>().Where(e => e.Id == original.Id);
+                    _original = query.First();
+                }
+
+            }
+            if (_classOverview.HaveCollection)
+            {
+                var collectionGenericType = _classOverview.CollectionGenericParameter;
                 SubCollectionDic = DbContextCreator.Create().GetDictionariesOfRelatedProperties(collectionGenericType);
             }
 
-            //var contextS = DbContextCreator.Create();
-            //using (contextS)
-            //{
-            //    var collectionS = contextS.Entry(original).Collection(classOverview.CollectionProperty.Name);
-
-            //    foreach (var item in collectionS.CurrentValue)
-            //    {
-            //        var entry = contextS.Entry(item);
-            //        entry.State = EntityState.Unchanged;
-            //        foreach (var property in classOverview.CollectionGenericClassOverview.PropertiesOfCoreClass)
-            //        {
-            //            entry.Reference(property.Name)..Load();  // Используйте Reference для одиночных навигационных свойств
-            //                                                 // Или entry.Collection(property.Name).Load(); если это коллекционные свойства
-            //        }
-            //    }
-            //}
-
-
-            _original = original;
-            Edit = (T)original.Clone();
+            Edit = (T)_original.Clone();
             _collection = collection;
             _validation = new Validation<T>(Edit);
-
-            //foreach (var property in Dic.Keys)
-            //{
-            //    var id = ((ProjectModel)typeof(T).GetProperty(property).GetValue(Edit)).Id;
-            //    var obj = Dic[property].Where(pair => pair.Value.Id == id).Select(pair => pair.Value).FirstOrDefault();
-            //    typeof(T).GetProperty(property).SetValue(Edit, obj);
-            //}
         }
 
         public void Save()
@@ -96,10 +79,13 @@ namespace WPFUsefullThings
                 ValidationRules.ShowErrorMessage();
                 return;
             }
-
+            if (_classOverview.HaveSubCollection)
+            {
+                SaveSubCollection();
+            }
             _original.UpdateFrom(Edit);
             
-            using (var context = GetContext())
+            using (var context = DbContextCreator.Create())
             {
                 var dbSet = context.Set<T>();
                 dbSet.Update(_original);
@@ -118,6 +104,46 @@ namespace WPFUsefullThings
                 throw new ArgumentException("Type of the context don't belong to class DbContext");
         }
 
-        private DbContext GetContext() => (DbContext)Activator.CreateInstance(_dbContextType);
+        //private IList GetSubCollectionElementsToDelete(T edit, T origin)
+        //{
+        //        IList listToDelete = CreateListOfType(_classOverview.CollectionGenericParameter);
+        //        var originalCollection = _classOverview.GetCollectionFor(origin);
+        //        var editCollection = _classOverview.GetCollectionFor(edit);
+        //        foreach (var item in originalCollection)
+        //        {
+        //            if (!editCollection.Contains(item))
+        //            {
+        //                listToDelete.Add(item);
+        //            }
+        //        }
+        //        return listToDelete;
+        //}
+
+        //private IList GetSubCollectionElementsToAdd(T edit, T origin)
+        //{
+        //    IList listToDelete = CreateListOfType(_classOverview.CollectionGenericParameter);
+        //    var originalCollection = _classOverview.GetCollectionFor(origin);
+        //    var editCollection = _classOverview.GetCollectionFor(edit);
+        //    foreach (var item in originalCollection)
+        //    {
+        //        if (!editCollection.Contains(item))
+        //        {
+        //            listToDelete.Add(item);
+        //        }
+        //    }
+        //    return listToDelete;
+        //}
+
+        private static IList CreateListOfType(Type type)
+        {
+            Type genericListType = typeof(List<>).MakeGenericType(type);
+            return (IList)Activator.CreateInstance(genericListType);
+        }
+
+        private void SaveSubCollection()
+        {
+            Type genericListType = typeof(SubCollectionSaver<>).MakeGenericType(_classOverview.CollectionGenericParameter);
+            Activator.CreateInstance(genericListType, _classOverview.GetCollectionFor(Edit), _classOverview.GetCollectionFor(_original));
+        }
     }
 }
