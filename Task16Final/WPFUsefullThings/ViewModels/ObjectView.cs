@@ -1,18 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Dynamic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using PropertyChanged;
 using System.Collections;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace WPFUsefullThings
 {
@@ -112,36 +101,6 @@ namespace WPFUsefullThings
             if (contextType != typeof(DbContext) && !contextType.IsSubclassOf(typeof(DbContext)))
                 throw new ArgumentException("Type of the context don't belong to class DbContext");
         }
-
-        //private IList GetSubCollectionElementsToDelete(T edit, T origin)
-        //{
-        //        IList listToDelete = CreateListOfType(_classOverview.CollectionGenericParameter);
-        //        var originalCollection = _classOverview.GetCollectionFor(origin);
-        //        var editCollection = _classOverview.GetCollectionFor(edit);
-        //        foreach (var item in originalCollection)
-        //        {
-        //            if (!editCollection.Contains(item))
-        //            {
-        //                listToDelete.Add(item);
-        //            }
-        //        }
-        //        return listToDelete;
-        //}
-
-        //private IList GetSubCollectionElementsToAdd(T edit, T origin)
-        //{
-        //    IList listToDelete = CreateListOfType(_classOverview.CollectionGenericParameter);
-        //    var originalCollection = _classOverview.GetCollectionFor(origin);
-        //    var editCollection = _classOverview.GetCollectionFor(edit);
-        //    foreach (var item in originalCollection)
-        //    {
-        //        if (!editCollection.Contains(item))
-        //        {
-        //            listToDelete.Add(item);
-        //        }
-        //    }
-        //    return listToDelete;
-        //}
 
         private static IList CreateListOfType(Type type)
         {

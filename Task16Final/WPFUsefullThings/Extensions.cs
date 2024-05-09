@@ -1,17 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.SqlServer.Management.HadrData;
-using System;
-using System.CodeDom;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+﻿using System.Reflection;
 
 namespace WPFUsefullThings
 {

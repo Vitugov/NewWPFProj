@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows;
-using System.Windows.Data;
+﻿using Castle.Core.Internal;
 using Microsoft.Xaml.Behaviors;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
 using System.Collections;
-using Castle.Core.Internal;
+using System.ComponentModel;
+using System.Reflection;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace WPFUsefullThings
 {
