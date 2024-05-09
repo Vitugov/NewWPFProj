@@ -37,8 +37,11 @@ namespace WPFUsefullThings
             var stackPanel = WindowConstructor.InitializeItemWindow(type);
             baseGrid.Children.Add(stackPanel);
             var classOverview = ClassOverview.Dic[type.Name];
-            var dataGrid = BuildDataGrid(Type);
-            stackPanel.Children.Add(dataGrid);
+            if (classOverview.HaveCollection)
+            {
+                var dataGrid = BuildDataGrid(Type);
+                stackPanel.Children.Add(dataGrid);
+            }
             var buttonStackPanel = BuildButtonStackPanel();
             stackPanel.Children.Add(buttonStackPanel);
         }

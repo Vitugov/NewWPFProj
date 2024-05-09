@@ -1,4 +1,5 @@
-﻿using Microsoft.SqlServer.Management.HadrModel;
+﻿using Castle.Core.Internal;
+using Microsoft.SqlServer.Management.HadrModel;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace WPFUsefullThings
         public static Dictionary<string, ClassOverview> Dic { get; set; } = [];
         public static Type CoreClass { get; set; } = typeof(ProjectModel);
         public static Type[] AllDerivedClasses { get; set; }
+        public static List<KeyValuePair<string, Type>> TypesForMainWindow { get; set; } = [];
 
 
         public string Name { get; set; }
@@ -48,6 +50,12 @@ namespace WPFUsefullThings
                     }
                 }
             }
+            TypesForMainWindow = AllDerivedClasses
+                .Where(type => type.GetAttribute<SubClassAttribute>() == null
+                    || type.GetAttribute<SubClassAttribute>().IsSubClass == false)
+                .Select(type => new KeyValuePair<string, Type>(type.GetAttribute<DisplayNamesAttribute>().Plural, type))
+                .OrderBy(pair => pair.Key)
+                .ToList();
         }
         
         public ClassOverview(Type type)

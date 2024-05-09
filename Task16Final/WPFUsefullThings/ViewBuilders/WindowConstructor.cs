@@ -11,6 +11,7 @@ using Microsoft.Xaml.Behaviors;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Collections;
+using Castle.Core.Internal;
 
 namespace WPFUsefullThings
 {
@@ -22,7 +23,7 @@ namespace WPFUsefullThings
             StackPanel mainPanel = new StackPanel { Orientation = Orientation.Vertical };
 
             // Перебор всех свойств определенного типа (например, string)
-            foreach (PropertyInfo property in type.GetProperties())
+            foreach (PropertyInfo property in type.GetProperties().Where(property => property.GetAttribute<InvisibleAttribute>() == null))
             {
                 // Создание горизонтального StackPanel для каждой пары
                 StackPanel horizontalPanel = new StackPanel { Orientation = Orientation.Horizontal };

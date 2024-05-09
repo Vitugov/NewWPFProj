@@ -23,31 +23,12 @@ namespace Task16.View
     /// </summary>
     public partial class MainWindow : Window
     {
-        public ICommand OpenClientCollectionWindow {  get; set; }
-        public ICommand OpenOrderCollectionWindow { get; set; }
-
         public MainWindow()
         {
-            OpenClientCollectionWindow = new RelayCommand(obj => Execute_OpenClientCollectionWindow());
-            OpenOrderCollectionWindow = new RelayCommand(obj => Execute_OpenOrderCollectionWindow());
-            DbContextCreator.SetDbContextType(typeof(SqliteContext));
             Initialization.Instance.Init();
             InitializeComponent();
-            DataContext = this;
-        }
-
-        private void Execute_OpenClientCollectionWindow()
-        {
-            var viewModel = new CollectionViewModel<Client>(typeof(SqliteContext));
-            var view = new CollectionWindow(viewModel);
-            view.ShowDialog();
-        }
-
-        private void Execute_OpenOrderCollectionWindow()
-        {
-            var viewModel = new CollectionViewModel<Order>(typeof(SqliteContext));
-            var view = new CollectionWindow(viewModel);
-            view.ShowDialog();
+            DataContext = new MainViewModel(typeof(SqliteContext));
+            baseGrid.Children.Add(MainWindowConstructor.BuildButtonsStackPanel());
         }
     }
 }

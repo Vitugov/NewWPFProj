@@ -5,23 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Task16.View"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="2*"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Style="{StaticResource HeaderStyle}">Таблицы</TextBlock>
-            <Button
-           Grid.Column="1"
-           Content="Клиенты"
-           Command="{Binding OpenClientCollectionWindow}"/>
-            <Button
-           Grid.Column="2"
-           Content="Заказы"
-           Command="{Binding OpenOrderCollectionWindow}"/>
-        </Grid>
+        Title="MainWindow" Height="300" Width="400">
+    <Grid x:Name="baseGrid">
     </Grid>
 </Window>

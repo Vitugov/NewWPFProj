@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace WPFUsefullThings.ViewModels
+namespace WPFUsefullThings
 {
     public class MainViewModel
     {
@@ -18,17 +18,13 @@ namespace WPFUsefullThings.ViewModels
         public MainViewModel(Type dbContextType)
         {
             DbContextType = dbContextType;
-            TypesToView = ClassOverview.AllDerivedClasses
-                .Where(type => type.GetAttribute<SubClassAttribute>() == null
-                    || type.GetAttribute<SubClassAttribute>().IsSubClass == false)
-                .Select(type => new KeyValuePair<string, Type>(type.GetAttribute<DisplayNamesAttribute>().Plural, type))
-                .OrderBy(pair => pair.Key)
-                .ToList();
+            DbContextCreator.SetDbContextType(DbContextType);
+            TypesToView = ClassOverview.TypesForMainWindow;
             foreach (var pair in TypesToView)
             {
                 var resultCommand = new RelayCommand(obj => Execute_OpenCollectionWindow(pair.Value));
-                var resultPair = new KeyValuePair<string, ICommand>(pair.Key, resultCommand);
-                OpenCollectionWindowCommand.Add(resultPair);
+                var resultpair = new KeyValuePair<string, ICommand>(pair.Key, resultCommand);
+                OpenCollectionWindowCommand.Add(resultpair);
             }
         }
 
