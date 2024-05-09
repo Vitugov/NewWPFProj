@@ -6,13 +6,8 @@ using System.Threading.Tasks;
 
 namespace WPFUsefullThings
 {
+    [AttributeUsage(AttributeTargets.Property)]
     public class InvisibleAttribute : Attribute
     {
-        public bool IsInvisible { get; set; }
-
-        public InvisibleAttribute(bool isInvivsible = true)
-        {
-            IsInvisible = isInvivsible;
-        }
     }
 }

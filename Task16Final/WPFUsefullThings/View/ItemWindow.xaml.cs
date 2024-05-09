@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -101,10 +102,17 @@ namespace WPFUsefullThings
                     ItemsSource = ((IItemViewModel)DataContext).SubCollectionDic[$"{e.PropertyType.Name}"],
                     SelectedValueBinding = new Binding(e.PropertyType.Name)
                 };
-
                 e.Column = comboBoxColumn;
+            }            
+        
+            if (e.PropertyDescriptor is PropertyDescriptor descriptor)
+            {
+                bool isInvisible = descriptor.Attributes[typeof(InvisibleAttribute)] != null;
+                bool isCollection = typeof(IEnumerable).IsAssignableFrom(descriptor.PropertyType)
+                    && descriptor.PropertyType != typeof(string);
+                e.Column.Visibility = !isInvisible && !isCollection ? Visibility.Visible : Visibility.Collapsed;
+                e.Column.Header = descriptor.DisplayName ?? descriptor.Name;
             }
         }
     }
-    
 }

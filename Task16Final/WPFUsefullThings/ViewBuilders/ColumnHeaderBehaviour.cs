@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -25,11 +26,20 @@ namespace WPFUsefullThings
         {
             if (eventArgs.PropertyDescriptor is PropertyDescriptor descriptor)
             {
-                eventArgs.Column.Header = descriptor.DisplayName ?? descriptor.Name;
-            }
-            else
-            {
-                eventArgs.Cancel = true;
+                // Проверка на наличие атрибута InvisibleAttribute
+                var invisibleAttribute = descriptor.Attributes[typeof(InvisibleAttribute)];
+                bool isCollection = typeof(IEnumerable).IsAssignableFrom(descriptor.PropertyType) && descriptor.PropertyType != typeof(string);
+
+                if (invisibleAttribute != null || isCollection)
+                {
+                    // Не генерируем столбец для этого свойства
+                    eventArgs.Cancel = true;
+                }
+                else
+                {
+                    // Устанавливаем заголовок столбца
+                    eventArgs.Column.Header = descriptor.DisplayName ?? descriptor.Name;
+                }
             }
         }
     }

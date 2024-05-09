@@ -18,11 +18,11 @@ namespace WPFUsefullThings
         
         [Key]
         [DisplayName("Id")]
-        [Invisible()]
+        [Invisible]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [Invisible()]
         private string displayName = "";
+        [Invisible]
         public string DisplayName
         {
             get => displayName;
