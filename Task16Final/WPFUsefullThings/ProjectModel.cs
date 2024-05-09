@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PropertyChanged;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace WPFUsefullThings
 {
-    public abstract class ProjectModel : ICloneable, INotifyPropertyChanged
+    public abstract partial class ProjectModel : ICloneable, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         
@@ -19,11 +20,22 @@ namespace WPFUsefullThings
         [DisplayName("Id")]
         [Invisible()]
         public Guid Id { get; set; } = Guid.NewGuid();
-        
-        [Invisible()]
-        public string DisplayName { get; set; } = "";
 
-        public ProjectModel() { }
+        [Invisible()]
+        private string displayName = "";
+        public string DisplayName
+        {
+            get => displayName;
+            set
+            {
+                if (value != displayName)
+                {
+                    displayName = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public ProjectModel() {}
         public virtual void UpdateFrom(ProjectModel obj)
         {
             if (obj == null || this.GetType() != obj.GetType())

@@ -100,6 +100,11 @@ namespace WPFUsefullThings
             {
                 _collection.Add(_original);
             }
+            else
+            {
+                _collection.Remove(_original);
+                _collection.Add(_original);
+            }
         }
 
         private void IfNotADbContextThrowExeption(Type contextType)

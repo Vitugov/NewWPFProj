@@ -13,9 +13,9 @@ namespace Task16.Model
 {
 
     [DisplayNames("Заказ", "Заказы")]
-    public class Order : ProjectModel
+    public partial class Order : ProjectModel, INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public new event PropertyChangedEventHandler? PropertyChanged;
 
         [DisplayName("Клиент")]
         public Client Client { get; set; }

@@ -12,6 +12,7 @@ using System.Windows;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using WPFUsefullThings.ViewModels;
 
 namespace WPFUsefullThings
 {
@@ -73,7 +74,7 @@ namespace WPFUsefullThings
             using (var context = GetContext())
             {
                 var query = context.ShallowSet<T>();
-                ItemCollection = new ObservableCollection<T>(query);
+                ItemCollection = [.. query];
             }
             ItemCollectionView = new ListCollectionView(ItemCollection);
         }

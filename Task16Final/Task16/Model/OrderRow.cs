@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PropertyChanged;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -12,8 +13,10 @@ namespace Task16.Model
 {
     [DisplayNames("Строка заказа", "Номенклатура")]
     [SubClass()]
-    public class OrderRow : ProjectModel
+    public partial class OrderRow : ProjectModel, INotifyPropertyChanged
     {
+        public new event PropertyChangedEventHandler? PropertyChanged;
+
         [DisplayName("Наименование товара")]
         public Commodity Commodity { get; set; }
         

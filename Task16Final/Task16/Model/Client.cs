@@ -12,9 +12,9 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 namespace Task16.Model
 {
     [DisplayNames("Клиент", "Клиенты")]
-    public class Client : ProjectModel
+    public partial class Client : ProjectModel, INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public new event PropertyChangedEventHandler? PropertyChanged;
 
         [DisplayName("Фамилия")]
         [StringLength(25, MinimumLength = 1)]
