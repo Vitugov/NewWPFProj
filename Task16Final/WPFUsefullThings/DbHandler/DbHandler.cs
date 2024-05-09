@@ -6,11 +6,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-//using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore.Query;
-using System.Linq.Dynamic.Core;
-using NooberCong.DynamicInclude.Extensions;
+
 
 namespace WPFUsefullThings
 {
