@@ -34,11 +34,11 @@ namespace WPFUsefullThings
             IQueryable<T> query = dbContext.Set<T>();
             foreach (var property in classOverview.PropertiesOfCoreClass)
             {
-                query = query.SuperInclude(property.Name);
+                query = query.Include(property.Name);
             }
             if (classOverview.HaveCollection)
             {
-                query = query.SuperInclude(classOverview.CollectionProperty.Name);
+                query = query.Include(classOverview.CollectionProperty.Name);
                 foreach (var property in classOverview.CollectionGenericClassOverview.PropertiesOfCoreClass)
                 {
                     query = query.Include($"{classOverview.CollectionProperty.Name}.{property.Name}");

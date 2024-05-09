@@ -22,6 +22,7 @@ namespace WPFUsefullThings
         private readonly Type _dbContextType;
 
         private readonly ProjectModel? _parent;
+        private readonly ClassOverview _classOverview;
         
         public string Header { get; set; }
         
@@ -66,8 +67,8 @@ namespace WPFUsefullThings
         public CollectionViewModel(Type dbContextType) : this()
         {
             _dbContextType = dbContextType;
-            var classOverview = ClassOverview.Dic[typeof(T).Name];
-            Header = classOverview.DisplayNamePlural;
+            _classOverview = ClassOverview.Dic[typeof(T).Name];
+            Header = _classOverview.DisplayNamePlural;
 
             using (var context = GetContext())
             {
@@ -102,6 +103,16 @@ namespace WPFUsefullThings
 
             using (var context = GetContext())
             {
+                var query = context.DeepSet<T>().Where(e => e.Id == item.Id);
+                item = query.First();
+                if (_classOverview.HaveSubCollection)
+                {
+                    var collection = _classOverview.GetCollectionFor(item);
+                    foreach (var row in collection)
+                    {
+                        context.Entry(row).State = EntityState.Deleted;
+                    }
+                }
                 context.Set<T>().Remove(item);
                 context.SaveChanges();
             }

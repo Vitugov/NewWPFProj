@@ -32,9 +32,6 @@ namespace WPFUsefullThings
             return result;
         }
 
-        private static object GetInstance(this Type type)
-        {
-            return Activator.CreateInstance(type);
-        }
+
     }
 }
