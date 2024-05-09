@@ -1,7 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+using Task16.Model;
 using WPFUsefullThings;
 
-namespace Task16.Model
+namespace Task16
 {
     public class SqliteContext : DbContext
     {
@@ -14,8 +17,13 @@ namespace Task16.Model
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder
-                .UseSqlite("Data Source=CyberStore.db");
+            var configuration = new ConfigurationBuilder()
+            . SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            optionsBuilder.UseSqlite(connectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
