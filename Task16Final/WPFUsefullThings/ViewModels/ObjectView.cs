@@ -89,7 +89,10 @@ namespace WPFUsefullThings
             {
                 var dbSet = context.Set<T>();
                 dbSet.Update(_original);
-                context.Entry(_original).State = EntityState.Added;
+                if (_isNew)
+                {
+                    context.Entry(_original).State = EntityState.Added;
+                }
                 context.SaveChanges();
             }
             
