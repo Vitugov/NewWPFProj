@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace WPFUsefullThings
@@ -13,7 +8,7 @@ namespace WPFUsefullThings
         public static StackPanel BuildButtonsStackPanel()
         {
             var stackPanel = new StackPanel();
-            for(var i = 0; i< ClassOverview.TypesForMainWindow.Count; i++)
+            for (var i = 0; i < ClassOverview.TypesForMainWindow.Count; i++)
             {
                 var button = new Button();
 

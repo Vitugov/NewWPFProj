@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Task16.Model;
+﻿using Task16.Model;
 
 namespace Task16.Other
 {
