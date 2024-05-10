@@ -15,7 +15,7 @@ namespace WPFUsefullThings
         {
             // Основной вертикальный StackPanel для всех пар TextBlock и TextBox
             StackPanel mainPanel = new StackPanel { Orientation = Orientation.Vertical };
-            var classOverview = ClassOverview.Dic[type.Name];
+            var classOverview = type.GetClassOverview();
             // Перебор всех свойств определенного типа (например, string)
             foreach (PropertyInfo property in type.GetProperties().Where(property => property.GetAttribute<InvisibleAttribute>() == null))
             {

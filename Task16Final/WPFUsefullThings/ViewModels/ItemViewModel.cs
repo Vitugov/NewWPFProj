@@ -9,9 +9,6 @@ namespace WPFUsefullThings
     public class ItemViewModel<T> : INotifyPropertyChangedPlus, IItemViewModel
         where T : ProjectModel, new()
     {
-        private DbContext GetContext() => (DbContext)Activator.CreateInstance(_dbContextType);
-        private readonly Type _dbContextType;
-
         public string Header { get; set; }
 
         public Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> Dic => Item.Dic;
@@ -37,13 +34,13 @@ namespace WPFUsefullThings
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
 
-        public ItemViewModel(T? item, ObservableCollection<T> itemCollection, Type contextType) : this()
+        public ItemViewModel(T? item, ObservableCollection<T> itemCollection) : this()
         {
-            _dbContextType = contextType;
+
             var addition = item == null ? "*" : "";
             
-            Header = ClassOverview.Dic[typeof(T).Name].DisplayNameSingular + addition;
-            Item = new ObjectView<T>(item, itemCollection, contextType);
+            Header = typeof(T).GetClassOverview().DisplayNameSingular + addition;
+            Item = new ObjectView<T>(item, itemCollection);
         }
 
         public ItemViewModel()

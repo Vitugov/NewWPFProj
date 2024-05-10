@@ -21,7 +21,7 @@ namespace WPFUsefullThings
             Type = type;
             var stackPanel = WindowConstructor.InitializeItemWindow(type);
             baseStackPanel.Children.Add(stackPanel);
-            var classOverview = ClassOverview.Dic[type.Name];
+            var classOverview = type.GetClassOverview();
             if (classOverview.HaveCollection)
             {
                 var dataGrid = BuildDataGrid(Type);
@@ -65,7 +65,7 @@ namespace WPFUsefullThings
 
         private DataGrid? BuildDataGrid(Type type)
         {
-            var classOverview = ClassOverview.Dic[type.Name];
+            var classOverview = type.GetClassOverview();
             if (classOverview.HaveCollection)
             {
                 var dataGrid = new DataGrid

@@ -11,7 +11,7 @@ namespace WPFUsefullThings
     public static class Info
     {
         private static Dictionary<string, ClassOverview> ClassOverviewDic { get; set; } = [];
-        private static Type CoreClass { get; set; } = typeof(ProjectModel);
+        public static Type CoreClass { get; } = typeof(ProjectModel);
         private static Type[] AllUserClasses { get; set; }
         private static List<KeyValuePair<string, Type>> MainWindowClasses { get; set; } = [];
 

@@ -8,7 +8,7 @@ namespace WPFUsefullThings
         public static StackPanel BuildButtonsStackPanel()
         {
             var stackPanel = new StackPanel();
-            for (var i = 0; i < ClassOverview.TypesForMainWindow.Count; i++)
+            for (var i = 0; i < Info.GetMainWindowClasses().Count; i++)
             {
                 var button = new Button();
 

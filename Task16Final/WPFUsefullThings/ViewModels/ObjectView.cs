@@ -20,18 +20,15 @@ namespace WPFUsefullThings
         public Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> SubCollectionDic { get; set; } = [];
 
         private readonly ObservableCollection<T> _collection;
-        private readonly Type _dbContextType;
         private readonly T _original;
         private readonly bool _isNew = false;
         private readonly Validation<T> _validation;
         private readonly ClassOverview _classOverview;
 
 
-        public ObjectView(T? original, ObservableCollection<T> collection, Type contextType)
+        public ObjectView(T? original, ObservableCollection<T> collection)
         {
-            IfNotADbContextThrowExeption(contextType);
-            _dbContextType = contextType;
-            _classOverview = ClassOverview.Dic[typeof(T).Name];
+            _classOverview = typeof(T).GetClassOverview();
             Dic = DbContextCreator.Create().GetDictionariesOfRelatedProperties(typeof(T));
             
             if (original == null)

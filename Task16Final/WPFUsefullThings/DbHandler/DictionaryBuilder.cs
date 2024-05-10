@@ -9,9 +9,9 @@ namespace WPFUsefullThings
         public static Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>>
             GetDictionariesOfRelatedProperties(this DbContext cont, Type type)
         {
-            var classOverview = ClassOverview.Dic[type.Name];
+            var classOverview = type.GetClassOverview();
             var dic = new Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>>();
-            foreach (var property in classOverview.PropertiesOfCoreClass)
+            foreach (var property in classOverview.PropertiesOfUserClass)
             {
                 using (var context = DbContextCreator.Create())
                 {

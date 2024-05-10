@@ -9,7 +9,6 @@ namespace WPFUsefullThings
     public class CollectionViewModel<T> : INotifyPropertyChangedPlus
         where T : ProjectModel, new()
     {
-        private DbContext GetContext() => (DbContext)Activator.CreateInstance(_dbContextType);
         private readonly Type _dbContextType;
 
         private readonly ProjectModel? _parent;
@@ -55,23 +54,19 @@ namespace WPFUsefullThings
         public ICommand ChangeItemCommand { get; }
         public ICommand DeleteItemCommand { get; }
 
-        public CollectionViewModel(Type dbContextType) : this()
+        public CollectionViewModel()
         {
-            _dbContextType = dbContextType;
-            _classOverview = ClassOverview.Dic[typeof(T).Name];
+            _classOverview = typeof(T).GetClassOverview();
             Header = _classOverview.DisplayNamePlural;
 
-            using (var context = GetContext())
+            using (var context = DbContextCreator.Create())
             {
                 var query = context.ShallowSet<T>();
                 ItemCollection = [.. query];
             }
             ItemCollectionView = new ListCollectionView(ItemCollection);
             ItemCollectionView.SortDescriptions.Add(new SortDescription("DisplayName", ListSortDirection.Ascending));
-        }
-
-        public CollectionViewModel()
-        {
+            
             AddNewItemCommand = new RelayCommand(obj => ExecuteChangeItem());
             ChangeItemCommand = new RelayCommand(obj => ExecuteChangeItem(SelectedItem), obj => SelectedItem != null);
             DeleteItemCommand = new RelayCommand(obj => ExecuteDeleteItem(SelectedItem), obj => SelectedItem != null);
@@ -79,7 +74,7 @@ namespace WPFUsefullThings
 
         private void ExecuteChangeItem(T? item = null)
         {
-            var itemVM = new ItemViewModel<T>(item, ItemCollection, _dbContextType);
+            var itemVM = new ItemViewModel<T>(item, ItemCollection);
             var itemView = new ItemWindow(typeof(T), itemVM);
             itemView.ShowDialog();
         }
@@ -93,7 +88,7 @@ namespace WPFUsefullThings
 
             ItemCollection.Remove(item);
 
-            using (var context = GetContext())
+            using (var context = DbContextCreator.Create())
             {
                 var query = context.DeepSet<T>().Where(e => e.Id == item.Id);
                 item = query.First();

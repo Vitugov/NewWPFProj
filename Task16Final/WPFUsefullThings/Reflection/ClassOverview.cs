@@ -7,12 +7,6 @@ namespace WPFUsefullThings
 {
     public class ClassOverview
     {
-        public static Dictionary<string, ClassOverview> Dic { get; set; } = [];
-        public static Type CoreClass { get; set; } = typeof(ProjectModel);
-        public static Type[] AllDerivedClasses { get; set; }
-        public static List<KeyValuePair<string, Type>> TypesForMainWindow { get; set; } = [];
-
-
         public string Name { get; set; }
         public string DisplayNameSingular { get; set; }
         public string DisplayNamePlural { get; set; }
@@ -23,32 +17,12 @@ namespace WPFUsefullThings
 
         public Dictionary<string, string> PropertiesDisplayNames { get; set; }
 
-        public PropertyInfo[] PropertiesOfCoreClass { get; set; }
+        public PropertyInfo[] PropertiesOfUserClass { get; set; }
         public bool HaveCollection { get; set; }
-        public bool IsCollectionSubClass { get; set; }  //ToDelete
+        public bool IsCollectionSubClass { get; set; }
+        public bool HaveSubCollection => HaveCollection && IsCollectionSubClass;
         public PropertyInfo? CollectionProperty { get; set; }
         public Type? CollectionGenericParameter { get; set; }
-        public ClassOverview? CollectionGenericClassOverview { get; set; } // ToDelete
-
-        static ClassOverview()
-        {
-            AllDerivedClasses = GetAllDerivedClasses();
-            if (AllDerivedClasses.Any())
-            {
-                foreach (var derivedClass in AllDerivedClasses)
-                {
-                    if (!Dic.ContainsKey(derivedClass.Name))
-                    {
-                        _ = new ClassOverview(derivedClass);
-                    }
-                }
-            }
-            TypesForMainWindow = AllDerivedClasses
-                .Where(type => type.GetAttribute<SubClassAttribute>() == null)
-                .Select(type => new KeyValuePair<string, Type>(type.GetAttribute<DisplayNamesAttribute>().Plural, type))
-                .OrderBy(pair => pair.Key)
-                .ToList();
-        }
         
         public ClassOverview(Type type)
         {
@@ -59,51 +33,17 @@ namespace WPFUsefullThings
             DisplayNameSingular = displayAttribute.Singular;
             DisplayNamePlural = displayAttribute.Plural;
 
-            if (!CoreClass.IsAssignableFrom(Type))
-                throw new Exception($"Type {Name} does not implement {CoreClass}.");
             Properties = Type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             PropertiesDisplayNames = GetPropertiesDisplayNamesDic();
 
-            PropertiesOfCoreClass = GetPropertiesOfCoreClass();
+            PropertiesOfUserClass = GetPropertiesOfCoreClass();
             CollectionProperty = GetIEnumerableProperty();
             HaveCollection = CollectionProperty != null;
             if (HaveCollection)
             {
                 CollectionGenericParameter = GetIEnumerableGeneric();
                 IsCollectionSubClass = GetIsSubClass(CollectionGenericParameter);
-
-                if (!Dic.ContainsKey(CollectionGenericParameter.Name))
-                {
-                    new ClassOverview(CollectionGenericParameter);
-                }
-                CollectionGenericClassOverview = Dic[CollectionGenericParameter.Name];
             }
-            if (!Dic.ContainsKey(Name))
-            {
-                Dic[Name] = this;
-            }
-        }
-
-        private static Type[] GetAllDerivedClasses()
-        {
-            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-            // Находим все типы, которые являются наследниками ProjectModel во всех сборках
-            var allDerivedTypes = assemblies.SelectMany(assembly =>
-            {
-                try
-                {
-                    return assembly.GetTypes()
-                        .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(CoreClass));
-                }
-                catch (ReflectionTypeLoadException ex)
-                {
-                    // В случае ошибок загрузки типа, возвращаем только успешно загруженные типы
-                    return ex.Types.Where(t => t != null && t.IsClass && !t.IsAbstract && t.IsSubclassOf(CoreClass));
-                }
-            }).ToArray();
-
-            return allDerivedTypes;
         }
 
         public ProjectModel CreateObject()
@@ -116,7 +56,7 @@ namespace WPFUsefullThings
         {
             var properties = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
             return properties
-                .Where(property => CoreClass.IsAssignableFrom(property.PropertyType))
+                .Where(property => property.PropertyType.IsUserClass())
                 .ToArray();
         }
 
@@ -149,11 +89,7 @@ namespace WPFUsefullThings
         private bool GetIsSubClass(Type type)
         {
             var subClassAttribute = type.GetCustomAttribute<SubClassAttribute>();
-            if (subClassAttribute == null)
-            {
-                return false;
-            }
-            return true;
+            return subClassAttribute != null ? true : false;
         }
 
         private PropertyInfo? GetIEnumerableProperty()
@@ -176,9 +112,9 @@ namespace WPFUsefullThings
                 .Select(i => i.GetGenericArguments()[0])
                 .FirstOrDefault();
 
-            if (elementType == null || !CoreClass.IsAssignableFrom(elementType))
+            if (elementType == null || !elementType.IsUserClass())
             {
-                throw new Exception($"There is no generic or generic does not implement {CoreClass}");
+                throw new Exception($"There is no generic or generic does not implement {Info.CoreClass}");
             }
 
             return elementType;
@@ -192,8 +128,6 @@ namespace WPFUsefullThings
                 throw new Exception($"Class {Type.FullName} consists more than one collection.");
             return result;
         }
-
-        public bool HaveSubCollection => HaveCollection && IsCollectionSubClass;
 
         public IList GetCollectionFor(object obj)
         {

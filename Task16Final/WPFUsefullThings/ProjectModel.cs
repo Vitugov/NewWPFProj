@@ -37,7 +37,7 @@ namespace WPFUsefullThings
                 throw new ArgumentException("Object must be of the same type.", nameof(obj));
             }
 
-            var properties = ClassOverview.Dic[this.GetType().Name].Properties;
+            var properties = this.GetType().GetClassOverview().Properties;
             foreach (var prop in properties)
             {
                 if (prop.CanRead && prop.CanWrite)
@@ -65,7 +65,7 @@ namespace WPFUsefullThings
 
         public virtual object Clone()
         {
-            var classOverview = ClassOverview.Dic[this.GetType().Name];
+            var classOverview = this.GetType().GetClassOverview();
             var clone = classOverview.CreateObject();
 
             foreach (var property in classOverview.Properties)

@@ -6,9 +6,9 @@ namespace WPFUsefullThings
         public static IQueryable<T> ShallowSet<T>(this DbContext dbContext)
             where T : ProjectModel
         {
-            var classOverview = ClassOverview.Dic[typeof(T).Name];
+            var classOverview = typeof(T).GetClassOverview();
             IQueryable<T> query = dbContext.Set<T>();
-            foreach (var property in classOverview.PropertiesOfCoreClass)
+            foreach (var property in classOverview.PropertiesOfUserClass)
             {
                 query = query.Include(property.Name);
             }
@@ -17,16 +17,17 @@ namespace WPFUsefullThings
         public static IQueryable<T> DeepSet<T>(this DbContext dbContext)
             where T : ProjectModel
         {
-            var classOverview = ClassOverview.Dic[typeof(T).Name];
+            var classOverview = typeof(T).GetClassOverview();
             IQueryable<T> query = dbContext.Set<T>();
-            foreach (var property in classOverview.PropertiesOfCoreClass)
+            foreach (var property in classOverview.PropertiesOfUserClass)
             {
                 query = query.Include(property.Name);
             }
             if (classOverview.HaveCollection)
             {
+                var properties = classOverview.CollectionGenericParameter.GetClassOverview().PropertiesOfUserClass;
                 query = query.Include(classOverview.CollectionProperty.Name);
-                foreach (var property in classOverview.CollectionGenericClassOverview.PropertiesOfCoreClass)
+                foreach (var property in properties)
                 {
                     query = query.Include($"{classOverview.CollectionProperty.Name}.{property.Name}");
                 }

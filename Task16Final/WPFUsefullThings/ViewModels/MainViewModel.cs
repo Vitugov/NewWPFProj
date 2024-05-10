@@ -4,15 +4,13 @@ namespace WPFUsefullThings
 {
     public class MainViewModel
     {
-        public Type DbContextType { get; set; }
         public List<KeyValuePair<string, Type>> TypesToView {  get; set; }
         public List<KeyValuePair<string, ICommand>> OpenCollectionWindowCommand { get; set; } = [];
 
         public MainViewModel(Type dbContextType)
         {
-            DbContextType = dbContextType;
-            DbContextCreator.SetDbContextType(DbContextType);
-            TypesToView = ClassOverview.TypesForMainWindow;
+            DbContextCreator.SetDbContextType(dbContextType);
+            TypesToView = Info.GetMainWindowClasses();
             foreach (var pair in TypesToView)
             {
                 var resultCommand = new RelayCommand(obj => Execute_OpenCollectionWindow(pair.Value));
@@ -24,7 +22,7 @@ namespace WPFUsefullThings
         private void Execute_OpenCollectionWindow(Type type)
         {
             Type genericListType = typeof(CollectionViewModel<>).MakeGenericType(type);
-            var viewModel = Activator.CreateInstance(genericListType, DbContextType);
+            var viewModel = Activator.CreateInstance(genericListType);
             var view = new CollectionWindow(viewModel);
             view.ShowDialog();
         }
