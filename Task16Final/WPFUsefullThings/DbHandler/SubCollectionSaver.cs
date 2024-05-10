@@ -10,21 +10,21 @@ namespace WPFUsefullThings
         public List<T> ToAdd { get; set; }
         public List<T> ToUpdate { get; set; }
         public List<T> ToDelete { get; set; }
-        public ObservableCollection<T> EditCollection { get; set; }
-        public ObservableCollection<T> OriginCollection { get; set; }
+        private ObservableCollection<T> _editCollection { get; set; }
+        private ObservableCollection<T> _originCollection { get; set; }
 
         public SubCollectionSaver(IList editCollection, IList originColection) 
         {
-            EditCollection = (ObservableCollection<T>)editCollection;
-            OriginCollection = (ObservableCollection<T>)originColection;
-            ToAdd = EditCollection
-                .Where(item => !OriginCollection.Contains(item))
+            _editCollection = (ObservableCollection<T>)editCollection;
+            _originCollection = (ObservableCollection<T>)originColection;
+            ToAdd = _editCollection
+                .Where(item => !_originCollection.Contains(item))
                 .ToList();
-            ToUpdate = OriginCollection
-                .Where(item => EditCollection.Contains(item))
+            ToUpdate = _originCollection
+                .Where(item => _editCollection.Contains(item))
                 .ToList();
-            ToDelete = OriginCollection
-                .Where(item => !EditCollection.Contains(item))
+            ToDelete = _originCollection
+                .Where(item => !_editCollection.Contains(item))
                 .ToList();
             Save();
         }

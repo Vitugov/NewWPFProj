@@ -25,10 +25,10 @@ namespace WPFUsefullThings
 
         public PropertyInfo[] PropertiesOfCoreClass { get; set; }
         public bool HaveCollection { get; set; }
-        public bool IsCollectionSubClass { get; set; }
+        public bool IsCollectionSubClass { get; set; }  //ToDelete
         public PropertyInfo? CollectionProperty { get; set; }
         public Type? CollectionGenericParameter { get; set; }
-        public ClassOverview? CollectionGenericClassOverview { get; set; }
+        public ClassOverview? CollectionGenericClassOverview { get; set; } // ToDelete
 
         static ClassOverview()
         {
@@ -44,8 +44,7 @@ namespace WPFUsefullThings
                 }
             }
             TypesForMainWindow = AllDerivedClasses
-                .Where(type => type.GetAttribute<SubClassAttribute>() == null
-                    || type.GetAttribute<SubClassAttribute>().IsSubClass == false)
+                .Where(type => type.GetAttribute<SubClassAttribute>() == null)
                 .Select(type => new KeyValuePair<string, Type>(type.GetAttribute<DisplayNamesAttribute>().Plural, type))
                 .OrderBy(pair => pair.Key)
                 .ToList();
@@ -154,7 +153,7 @@ namespace WPFUsefullThings
             {
                 return false;
             }
-            return subClassAttribute.IsSubClass;
+            return true;
         }
 
         private PropertyInfo? GetIEnumerableProperty()

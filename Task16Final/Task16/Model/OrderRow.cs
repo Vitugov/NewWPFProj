@@ -4,7 +4,7 @@ using WPFUsefullThings;
 namespace Task16.Model
 {
     [DisplayNames("Строка заказа", "Номенклатура")]
-    [SubClass()]
+    [SubClass]
     public partial class OrderRow : ProjectModel, INotifyPropertyChanged
     {
         public new event PropertyChangedEventHandler? PropertyChanged;

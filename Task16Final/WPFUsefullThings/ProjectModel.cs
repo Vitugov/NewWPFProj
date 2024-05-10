@@ -16,6 +16,7 @@ namespace WPFUsefullThings
 
         private string displayName = "";
         [Invisible]
+        [DisplayName("Display name")]
         public string DisplayName
         {
             get => displayName;

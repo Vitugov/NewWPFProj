@@ -9,9 +9,7 @@ namespace WPFUsefullThings
         where T : ProjectModel, new()
     {
         public event PropertyChangedEventHandler? PropertyChanged;
-        public T Edit
-        {   get;
-            set; }
+        public T Edit { get; set; }
         public DynamicIsValid IsPropertyValid => _validation.IsValid;
         public bool IsValid => _validation.Validate();
 
@@ -85,15 +83,11 @@ namespace WPFUsefullThings
                 context.SaveChanges();
             }
             
-            if (_isNew)
-            {
-                _collection.Add(_original);
-            }
-            else
+            if (!_isNew)
             {
                 _collection.Remove(_original);
-                _collection.Add(_original);
             }
+            _collection.Add(_original);
         }
 
         private void IfNotADbContextThrowExeption(Type contextType)
