@@ -35,6 +35,11 @@ namespace WPFUsefullThings
                     // Устанавливаем заголовок столбца
                     eventArgs.Column.Header = descriptor.DisplayName ?? descriptor.Name;
                 }
+                if (ClassOverview.AllDerivedClasses.Contains(eventArgs.PropertyType))
+                {
+                    eventArgs.Column.SortMemberPath = $"{eventArgs.PropertyName}.DisplayName";
+                    eventArgs.Column.CanUserSort = true;
+                }
             }
         }
     }
