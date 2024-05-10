@@ -37,7 +37,7 @@
                     Command="{Binding DeleteItemCommand}"/>
                     </Grid>
                     <DataGrid
-                ItemsSource="{Binding ItemCollectionView}"
+                ItemsSource="{Binding ItemCollectionView, UpdateSourceTrigger=PropertyChanged}"
                 SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}">
                         <i:Interaction.Behaviors>
                             <local:ColumnHeaderBehaviour/>

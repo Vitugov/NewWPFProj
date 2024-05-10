@@ -20,7 +20,7 @@ namespace WPFUsefullThings
             DataContext = context;
             Type = type;
             var stackPanel = WindowConstructor.InitializeItemWindow(type);
-            baseGrid.Children.Add(stackPanel);
+            baseStackPanel.Children.Add(stackPanel);
             var classOverview = ClassOverview.Dic[type.Name];
             if (classOverview.HaveCollection)
             {
@@ -38,13 +38,19 @@ namespace WPFUsefullThings
             {
                 Content = "Сохранить",
                 Command = viewModel.SaveCommand,
-                CommandParameter = this
+                CommandParameter = this,
+                Height = 25,
+                Width = 100,
+                Margin = new Thickness(5)
             };
             var cancelButton = new Button
             {
                 Content = "Отмена",
                 Command = viewModel.CancelCommand,
-                CommandParameter = this
+                CommandParameter = this,
+                Height = 25,
+                Width = 100,
+                Margin = new Thickness(5)
             };
             StackPanel buttonStackPanel = new StackPanel
             {

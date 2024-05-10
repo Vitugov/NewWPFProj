@@ -15,18 +15,21 @@ namespace WPFUsefullThings
         {
             // Основной вертикальный StackPanel для всех пар TextBlock и TextBox
             StackPanel mainPanel = new StackPanel { Orientation = Orientation.Vertical };
-
+            var classOverview = ClassOverview.Dic[type.Name];
             // Перебор всех свойств определенного типа (например, string)
             foreach (PropertyInfo property in type.GetProperties().Where(property => property.GetAttribute<InvisibleAttribute>() == null))
             {
                 // Создание горизонтального StackPanel для каждой пары
                 StackPanel horizontalPanel = new StackPanel { Orientation = Orientation.Horizontal };
 
+                string? viewName;
+                classOverview.PropertiesDisplayNames.TryGetValue(property.Name, out viewName);
+                viewName = viewName ?? property.Name;
                 // Создание TextBlock для имени свойства
                 TextBlock textBlock = new TextBlock
                 {
                     Width = 100,
-                    Text = property.Name + ": ",
+                    Text = viewName + ": ",
                     Margin = new Thickness(5) // небольшой отступ
                 };
 
