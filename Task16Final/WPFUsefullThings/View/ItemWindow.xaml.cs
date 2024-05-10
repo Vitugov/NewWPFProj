@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using WPFUsefullThings.ViewModels;
+
 
 namespace WPFUsefullThings
 {

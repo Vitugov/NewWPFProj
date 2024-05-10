@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
-using WPFUsefullThings.ViewModels;
+
 
 namespace WPFUsefullThings
 {

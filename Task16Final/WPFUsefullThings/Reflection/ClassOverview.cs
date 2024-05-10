@@ -18,12 +18,12 @@ namespace WPFUsefullThings
         public Dictionary<string, string> PropertiesDisplayNames { get; set; }
 
         public PropertyInfo[] PropertiesOfUserClass { get; set; }
-        public bool HaveCollection { get; set; }
-        public bool IsCollectionSubClass { get; set; }
-        public bool HaveSubCollection => HaveCollection && IsCollectionSubClass;
-        public PropertyInfo? CollectionProperty { get; set; }
-        public Type? CollectionGenericParameter { get; set; }
-        
+        public CollectionPropertyOverview[] CollectionProperties { get; set; } = [];
+        public bool HaveCollection => CollectionProperties.Any();
+        public bool HaveSubCollection => HaveCollection ? CollectionProperties[0].IsGenericClassSubClass : false;
+        public PropertyInfo? CollectionProperty => HaveCollection ? CollectionProperties[0].Property : null;
+        public Type? CollectionGenericParameter => HaveCollection ? CollectionProperties[0].GenericParameter : null;
+
         public ClassOverview(Type type)
         {
             Type = type;
@@ -32,18 +32,12 @@ namespace WPFUsefullThings
             var displayAttribute = GetClassDisplayName();
             DisplayNameSingular = displayAttribute.Singular;
             DisplayNamePlural = displayAttribute.Plural;
-
             Properties = Type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             PropertiesDisplayNames = GetPropertiesDisplayNamesDic();
-
             PropertiesOfUserClass = GetPropertiesOfCoreClass();
-            CollectionProperty = GetIEnumerableProperty();
-            HaveCollection = CollectionProperty != null;
-            if (HaveCollection)
-            {
-                CollectionGenericParameter = GetIEnumerableGeneric();
-                IsCollectionSubClass = GetIsSubClass(CollectionGenericParameter);
-            }
+            CollectionProperties = GetCollectionProperties()
+                .Select(property => new CollectionPropertyOverview(property))
+                .ToArray();
         }
 
         public ProjectModel CreateObject()
@@ -63,10 +57,9 @@ namespace WPFUsefullThings
         private Dictionary<string, string> GetPropertiesDisplayNamesDic()
         {
             var dic = new Dictionary<string, string>();
-            foreach (var property in Properties)
-            {
-                dic[property.Name] = GetPropertyDisplayName(property);
-            }
+            Properties
+                .ToList()
+                .ForEach(property => dic[property.Name] = GetPropertyDisplayName(property));
             return dic;
         }
 
@@ -79,11 +72,8 @@ namespace WPFUsefullThings
         private DisplayNamesAttribute GetClassDisplayName()
         {
             var displayNamesAttribute = Type.GetCustomAttribute<DisplayNamesAttribute>();
-            if (displayNamesAttribute == null)
-            {
-                throw new Exception($"Class {Name} doesn't have DisplayNamesAttribute");
-            }
-            return displayNamesAttribute;
+            return displayNamesAttribute != null ? displayNamesAttribute :
+                new DisplayNamesAttribute(Type.Name, Type.Name);
         }
 
         private bool GetIsSubClass(Type type)
@@ -92,40 +82,11 @@ namespace WPFUsefullThings
             return subClassAttribute != null ? true : false;
         }
 
-        private PropertyInfo? GetIEnumerableProperty()
-        {
-            var propertyWithCollection = GetCollectionProperties();
-
-            if (!propertyWithCollection.Any())
-            {
-                return null;
-            }
-
-            return propertyWithCollection.First();
-        }
-
-        private Type GetIEnumerableGeneric()
-        {
-            var propertyType = GetIEnumerableProperty().PropertyType;
-            Type? elementType = propertyType.GetInterfaces()
-                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                .Select(i => i.GetGenericArguments()[0])
-                .FirstOrDefault();
-
-            if (elementType == null || !elementType.IsUserClass())
-            {
-                throw new Exception($"There is no generic or generic does not implement {Info.CoreClass}");
-            }
-
-            return elementType;
-        }
-
         private IEnumerable<PropertyInfo> GetCollectionProperties()
         {
             var result = Properties
-                .Where(property => property.PropertyType.GetInterfaces().Any(i => i == typeof(IEnumerable) && property.PropertyType != typeof(string)));
-            if (result.Count() > 1)
-                throw new Exception($"Class {Type.FullName} consists more than one collection.");
+                .Where(property => property.PropertyType.GetInterfaces()
+                    .Any(i => i == typeof(IEnumerable) && property.PropertyType != typeof(string)));
             return result;
         }
 
