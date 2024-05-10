@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -66,6 +67,7 @@ namespace WPFUsefullThings
                 ItemCollection = [.. query];
             }
             ItemCollectionView = new ListCollectionView(ItemCollection);
+            ItemCollectionView.SortDescriptions.Add(new SortDescription("DisplayName", ListSortDirection.Ascending));
         }
 
         public CollectionViewModel()
