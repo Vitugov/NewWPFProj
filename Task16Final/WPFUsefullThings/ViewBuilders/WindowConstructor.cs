@@ -49,6 +49,10 @@ namespace WPFUsefullThings
                     }
                     Binding binding = new Binding("Item.Edit." + property.Name);
                     binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+                    if (property.PropertyType == typeof(DateTime))
+                    {
+                        binding.StringFormat = "dd.MM.yyyy HH:mm:ss";
+                    }
                     textBox.SetBinding(TextBox.TextProperty, binding);
 
                     // Добавление TextBlock и TextBox в горизонтальный StackPanel

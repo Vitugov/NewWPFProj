@@ -40,6 +40,10 @@ namespace WPFUsefullThings
                     eventArgs.Column.SortMemberPath = $"{eventArgs.PropertyName}.DisplayName";
                     eventArgs.Column.CanUserSort = true;
                 }
+                if (eventArgs.PropertyType == typeof(DateTime))
+                {
+                    (eventArgs.Column as DataGridTextColumn).Binding.StringFormat = "dd.MM.yyyy HH:mm:ss";
+                }
             }
         }
     }
