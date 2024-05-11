@@ -19,7 +19,7 @@ namespace WPFUsefullThings
             InitializeComponent();
             DataContext = context;
             Type = type;
-            var stackPanel = WindowConstructor.InitializeItemWindow(type);
+            var stackPanel = ItemWindowConstructor.InitializeItemWindow(type);
             baseStackPanel.Children.Add(stackPanel);
             var classOverview = type.GetClassOverview();
             if (classOverview.HaveCollection)
@@ -79,7 +79,6 @@ namespace WPFUsefullThings
                 dataGrid.AutoGeneratingColumn += DataGrid_AutoGeneratingColumn;
                 return dataGrid;
             }
-
 
             return null;
         }

@@ -59,11 +59,11 @@ namespace WPFUsefullThings
             var dic = new Dictionary<string, string>();
             Properties
                 .ToList()
-                .ForEach(property => dic[property.Name] = GetPropertyDisplayName(property));
+                .ForEach(property => dic[property.Name] = GetDisplayName(property));
             return dic;
         }
 
-        private static string GetPropertyDisplayName(PropertyInfo property)
+        public static string GetDisplayName(PropertyInfo property)
         {
             var displayNameAttribute = property.GetCustomAttribute<DisplayNameAttribute>();
             return displayNameAttribute != null ? displayNameAttribute.DisplayName : property.Name;
