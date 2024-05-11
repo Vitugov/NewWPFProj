@@ -19,7 +19,7 @@ namespace WPFUsefullThings
             InitializeComponent();
             DataContext = context;
             Type = type;
-            var stackPanel = ItemWindowConstructor.InitializeItemWindow(type);
+            var stackPanel = ItemWindowConstructor.CreateStackPanel(type);
             baseStackPanel.Children.Add(stackPanel);
             var classOverview = type.GetClassOverview();
             if (classOverview.HaveCollection)

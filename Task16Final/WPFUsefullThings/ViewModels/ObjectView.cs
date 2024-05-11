@@ -29,7 +29,7 @@ namespace WPFUsefullThings
         public ObjectView(T? original, ObservableCollection<T> collection)
         {
             _classOverview = typeof(T).GetClassOverview();
-            Dic = DbContextCreator.Create().GetDictionariesOfRelatedProperties(typeof(T));
+            Dic = typeof(T).GetDictionariesOfRelatedProperties();
             
             if (original == null)
             {
@@ -48,7 +48,7 @@ namespace WPFUsefullThings
             if (_classOverview.HaveCollection)
             {
                 var collectionGenericType = _classOverview.CollectionGenericParameter;
-                SubCollectionDic = DbContextCreator.Create().GetDictionariesOfRelatedProperties(collectionGenericType);
+                SubCollectionDic = collectionGenericType.GetDictionariesOfRelatedProperties();
             }
 
             Edit = (T)_original.Clone();

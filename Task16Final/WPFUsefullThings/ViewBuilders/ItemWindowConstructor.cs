@@ -12,7 +12,7 @@ namespace WPFUsefullThings
 {
     public static class ItemWindowConstructor
     {
-        public static StackPanel InitializeItemWindow(Type type)
+        public static StackPanel CreateStackPanel(Type type)
         {
             StackPanel mainPanel = new StackPanel { Orientation = Orientation.Vertical };
             var classOverview = type.GetClassOverview();
