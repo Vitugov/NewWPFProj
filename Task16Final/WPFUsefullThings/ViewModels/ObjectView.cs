@@ -13,10 +13,7 @@ namespace WPFUsefullThings
         public DynamicIsValid IsPropertyValid => _validation.IsValid;
         public bool IsValid => _validation.Validate();
 
-        private Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> _dic;
         public Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> Dic { get; set; }
-
-        private Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> _subCollectionDic;
         public Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> SubCollectionDic { get; set; } = [];
 
         private readonly ObservableCollection<T> _collection;

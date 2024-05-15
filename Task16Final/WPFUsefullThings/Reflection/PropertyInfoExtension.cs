@@ -18,16 +18,16 @@ namespace WPFUsefullThings
 
         public static IEnumerable<PropertyInfo> NotCollection(this IEnumerable<PropertyInfo> enumerable)
         {
-            return enumerable.Where(property => !property.IsCollection());
+            return enumerable.Where(property => !property.IsCollection() || property.PropertyType == typeof(string));
         }
 
         public static IEnumerable<PropertyInfo> IsCollection(this IEnumerable<PropertyInfo> enumerable)
         {
-            return enumerable.Where(property => property.IsCollection());
+            return enumerable.Where(property => property.IsCollection() && property.PropertyType != typeof(string));
         }
         public static bool IsCollection(this PropertyInfo property)
         {
-            return property.PropertyType.IsAssignableTo(typeof(IEnumerable));
+            return property.PropertyType.IsAssignableTo(typeof(IEnumerable)) && property.PropertyType != typeof(string);
         }
 
         public static IEnumerable<PropertyInfo> IsEasyType(this IEnumerable<PropertyInfo> enumerable)
