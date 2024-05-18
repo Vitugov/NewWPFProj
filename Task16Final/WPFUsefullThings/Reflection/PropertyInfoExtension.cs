@@ -13,17 +13,22 @@ namespace WPFUsefullThings
     {
         public static IEnumerable<PropertyInfo> IsVisible(this IEnumerable<PropertyInfo> enumerable)
         {
-            return enumerable.Where(property => property.GetAttribute<InvisibleAttribute>() == null);
+            return enumerable.Where(property => property.IsVisible());
+        }
+
+        public static bool IsVisible(this PropertyInfo property)
+        {
+            return property.GetAttribute<InvisibleAttribute>() == null && property.GetGetMethod(false) != null;
         }
 
         public static IEnumerable<PropertyInfo> NotCollection(this IEnumerable<PropertyInfo> enumerable)
         {
-            return enumerable.Where(property => !property.IsCollection() || property.PropertyType == typeof(string));
+            return enumerable.Where(property => !property.IsCollection());
         }
 
         public static IEnumerable<PropertyInfo> IsCollection(this IEnumerable<PropertyInfo> enumerable)
         {
-            return enumerable.Where(property => property.IsCollection() && property.PropertyType != typeof(string));
+            return enumerable.Where(property => property.IsCollection());
         }
         public static bool IsCollection(this PropertyInfo property)
         {
