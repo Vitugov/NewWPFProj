@@ -28,11 +28,10 @@ namespace WPFUsefullThings
                 IsReadOnly = false,
             };
 
-            Binding binding = new Binding("Item.Edit." + property.Name);
+            Binding binding = new Binding("EditableItem." + property.Name);
             binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
             dataGrid.SetBinding(DataGrid.ItemsSourceProperty, binding);
-            var resourceBinding = new Binding("SubCollectionDic");
-            dataGrid.Resources.Add("SubCollectionDic", resourceBinding);
+            dataGrid.Tag = property.PropertyType.GetGenericArguments().First();
             dataGrid.AutoGeneratingColumn += DataGrid_AutoGeneratingColumn;
             return dataGrid;
         }
@@ -51,7 +50,7 @@ namespace WPFUsefullThings
                     Header = e.PropertyName,
                     DisplayMemberPath = "Key",
                     SelectedValuePath = "Value",
-                    ItemsSource = ((IItemViewModel)dataGrid.DataContext).SubCollectionDic[$"{e.PropertyType.Name}"],
+                    ItemsSource = ((IItemViewModel)dataGrid.DataContext).ComboDic[((Type)dataGrid.Tag).Name][e.PropertyName],
                     SelectedValueBinding = new Binding(e.PropertyType.Name)
                 };
                 e.Column = comboBoxColumn;
@@ -59,6 +58,7 @@ namespace WPFUsefullThings
 
             if (e.PropertyDescriptor is PropertyDescriptor descriptor)
             {
+                
                 bool isInvisible = descriptor.Attributes[typeof(InvisibleAttribute)] != null;
                 bool isCollection = typeof(IEnumerable).IsAssignableFrom(descriptor.PropertyType)
                     && descriptor.PropertyType != typeof(string);

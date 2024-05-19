@@ -13,9 +13,6 @@ namespace WPFUsefullThings
         public DynamicIsValid IsPropertyValid => _validation.IsValid;
         public bool IsValid => _validation.Validate();
 
-        public Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> Dic { get; set; }
-        public Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> SubCollectionDic { get; set; } = [];
-
         private readonly ObservableCollection<T> _collection;
         private readonly T _original;
         private readonly bool _isNew = false;
@@ -26,7 +23,6 @@ namespace WPFUsefullThings
         public ObjectView(T? original, ObservableCollection<T> collection)
         {
             _classOverview = typeof(T).GetClassOverview();
-            Dic = typeof(T).GetDictionariesOfRelatedProperties();
             
             if (original == null)
             {
@@ -41,11 +37,6 @@ namespace WPFUsefullThings
                     _original = query.First();
                 }
 
-            }
-            if (_classOverview.HaveCollection)
-            {
-                var collectionGenericType = _classOverview.CollectionGenericParameter;
-                SubCollectionDic = collectionGenericType.GetDictionariesOfRelatedProperties();
             }
 
             Edit = (T)_original.Clone();

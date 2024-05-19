@@ -6,20 +6,25 @@ using System.Windows.Input;
 
 namespace WPFUsefullThings
 {
-    public class ItemViewModel<T> : INotifyPropertyChangedPlus, IItemViewModel
+    public class ItemViewModel<T> : INotifyPropertyChangedPlus, IItemViewModel<T>
         where T : ProjectModel, new()
     {
         public string Header { get; set; }
 
-        public Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> Dic => Item.Dic;
-        public Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> SubCollectionDic
-            => Item.SubCollectionDic;
+        public AllComboDictionary ComboDic { get; }
 
         private ObjectView<T> _item;
         public ObjectView<T> Item
         {
             get => _item;
             set => Set(ref _item, value);
+        }
+
+        private T _editableItem;
+        public T EditableItem
+        {
+            get => _editableItem;
+            set => Set(ref _editableItem, value);
         }
 
         private ProjectModel _selectedCollectionItem;
@@ -38,9 +43,10 @@ namespace WPFUsefullThings
         {
 
             var addition = item == null ? "*" : "";
-            
             Header = typeof(T).GetClassOverview().DisplayNameSingular + addition;
             Item = new ObjectView<T>(item, itemCollection);
+            EditableItem = _item.Edit;
+            ComboDic = new AllComboDictionary(typeof(T));
         }
 
         public ItemViewModel()

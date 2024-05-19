@@ -27,7 +27,7 @@ namespace WPFUsefullThings
             {
                 textBox.IsReadOnly = true;
             }
-            Binding binding = new Binding("Item.Edit." + property.Name);
+            Binding binding = new Binding("EditableItem." + property.Name);
             binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
             if (property.PropertyType == typeof(DateTime))
             {

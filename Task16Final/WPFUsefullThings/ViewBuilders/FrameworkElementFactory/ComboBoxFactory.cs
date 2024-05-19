@@ -28,19 +28,17 @@ namespace WPFUsefullThings
                 IsSynchronizedWithCurrentItem = true,
             };
 
-            Binding selectedValueBinding = new Binding("Item.Edit." + propertyName)
+            var selectedValueBinding = new Binding($"EditableItem.{propertyName}")
             {
                 Mode = BindingMode.TwoWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
             comboBox.SetBinding(ComboBox.SelectedValueProperty, selectedValueBinding);
 
-            Binding itemsSourceBinding = new Binding($"Dic[{propertyName}]");
-            comboBox.SetBinding(ItemsControl.ItemsSourceProperty, itemsSourceBinding);
+            var itemsSourceBinding = new Binding($"ComboDic[{property.DeclaringType.Name}][{property.Name}]");
+            comboBox.SetBinding(ComboBox.ItemsSourceProperty, itemsSourceBinding);
 
             return comboBox;
         }
-
-
     }
 }

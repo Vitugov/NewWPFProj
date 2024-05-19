@@ -75,7 +75,7 @@ namespace WPFUsefullThings
         private void ExecuteChangeItem(T? item = null)
         {
             var itemVM = new ItemViewModel<T>(item, ItemCollection);
-            var itemView = new ItemWindow(typeof(T), itemVM);
+            var itemView = new ItemWindow<T>(itemVM);
             itemView.ShowDialog();
         }
 
