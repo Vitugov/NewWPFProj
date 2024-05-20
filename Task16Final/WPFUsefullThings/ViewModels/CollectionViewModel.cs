@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -71,8 +71,15 @@ namespace WPFUsefullThings
         private void ExecuteDeleteItem(T? item)
         {
             if (item == null) { return; }
+            var list = item.GetLinksOnItem();
+            if (list.Any())
+            {
+                MessageBox.Show($"Невозможно удалить объект. На данный объект есть {list.Count} ссылок в базе данных.",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             ItemCollection.Remove(item);
-            DbHandler.DeleteItem(item);
+            item.DeleteItem();
         }
     }
 }

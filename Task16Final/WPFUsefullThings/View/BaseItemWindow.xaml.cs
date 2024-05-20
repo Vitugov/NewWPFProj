@@ -14,9 +14,7 @@ namespace WPFUsefullThings
     /// </summary>
     public partial class BaseItemWindow : Window
     {
-        public Type Type { get; set; }
-
-        public BaseItemWindow(IItemViewModel context)
+        public BaseItemWindow()
         {
             InitializeComponent();
             

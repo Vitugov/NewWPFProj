@@ -14,6 +14,16 @@ namespace WPFUsefullThings
             }
             return query;
         }
+        public static IQueryable<ProjectModel> ShallowSet(this DbContext dbContext, Type type)
+        {
+            var classOverview = type.GetClassOverview();
+            IQueryable<ProjectModel> query = dbContext.Set(type);
+            foreach (var property in classOverview.PropertiesOfUserClass)
+            {
+                query = query.Include(property.Name);
+            }
+            return query;
+        }
         public static IQueryable<T> DeepSet<T>(this DbContext dbContext)
             where T : ProjectModel
         {
@@ -32,15 +42,6 @@ namespace WPFUsefullThings
                     query = query.Include($"{collection.Property.Name}.{property.Name}");
                 }
             }
-            //if (classOverview.HaveCollection)
-            //{
-            //    var properties = classOverview.CollectionGenericParameter.GetClassOverview().PropertiesOfUserClass;
-            //    query = query.Include(classOverview.CollectionProperty.Name);
-            //    foreach (var property in properties)
-            //    {
-            //        query = query.Include($"{classOverview.CollectionProperty.Name}.{property.Name}");
-            //    }
-            //}
             return query;
         }
 
@@ -54,5 +55,6 @@ namespace WPFUsefullThings
             var result = (IQueryable<ProjectModel>)method.Invoke(dbContext, null);
             return result;
         }
+
     }
 }

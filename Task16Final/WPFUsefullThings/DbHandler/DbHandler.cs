@@ -1,19 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WPFUsefullThings
 {
-    public class DbHandler
+    public static class DbHandler
     {
-        public static List<ProjectModel> GetSet(Type type)
+        public static List<ProjectModel> GetSet(this Type type)
         {
             using (var context = DbContextCreator.Create())
             {
@@ -21,7 +12,7 @@ namespace WPFUsefullThings
             }
         }
 
-        public static T GetDeepSetForObj<T>(T obj)
+        public static T GetDeepSetForObj<T>(this T obj)
             where T : ProjectModel
         {
             using (var context = DbContextCreator.Create())
@@ -41,7 +32,7 @@ namespace WPFUsefullThings
             }
         }
 
-        public static void DeleteItem<T>(T item)
+        public static void DeleteItem<T>(this T item)
             where T : ProjectModel
         {
             var classOverview = typeof(T).GetClassOverview();
@@ -64,15 +55,11 @@ namespace WPFUsefullThings
             }
         }
 
-        public static void SaveItem<T>(T edit, T original, bool isNew)
+        public static void SaveItem<T>(this T edit, T original, bool isNew)
             where T : ProjectModel
         {
-            //var classOverview = typeof(T).GetClassOverview();
-            //if (classOverview.HaveSubCollection)
-            //{
-                ClassOverview.InvokeSaver(typeof(SubCollectionSaver<>), edit, original);
-            //}
-            
+            ClassOverview.InvokeSaver(typeof(SubCollectionSaver<>), edit, original);
+
             original.UpdateFrom(edit);
 
             using (var context = DbContextCreator.Create())
@@ -99,6 +86,31 @@ namespace WPFUsefullThings
                 DbContext.SaveChanges();
             }
         }
-        
+
+        public static List<ProjectModel> GetLinksOnItem<T>(this T item)
+            where T : ProjectModel
+        {
+            var linksList = new List<ProjectModel>();
+            foreach (var userClassOverview in Info.GetAllUserClassesOverview())
+            {
+                foreach (var property in userClassOverview.PropertiesOfUserClass.Where(prop => typeof(T) == prop.PropertyType))
+                {
+                    List<ProjectModel> resultList;
+                    using (var DbContext = DbContextCreator.Create())
+                    {
+                        resultList = DbContext
+                            .ShallowSet(userClassOverview.Type)
+                            .ToList()
+                            .Where(obj => ((T)property.GetValue(obj)).Id == item.Id)
+                            .ToList();
+                    }
+                    if (resultList.Any())
+                    {
+                        linksList.AddRange(resultList);
+                    }
+                }
+            }
+            return linksList;
+        }
     }
 }

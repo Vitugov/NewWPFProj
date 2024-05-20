@@ -30,7 +30,7 @@ namespace WPFUsefullThings
             }
             else
             {
-                _original = DbHandler.GetDeepSetForObj(original);
+                _original = original.GetDeepSetForObj();
             }
 
             Edit = (T)_original.Clone();
@@ -46,7 +46,7 @@ namespace WPFUsefullThings
                 return;
             }
 
-            DbHandler.SaveItem<T>(Edit, _original, _isNew);
+            Edit.SaveItem(_original, _isNew);
             
             if (!_isNew)
             {

@@ -97,5 +97,10 @@ namespace WPFUsefullThings
         {
             return MainWindowClasses;
         }
+
+        public static List<ClassOverview> GetAllUserClassesOverview()
+        {
+            return ClassOverviewDic.Values.ToList();
+        }
     }
 }

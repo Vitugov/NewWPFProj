@@ -11,7 +11,7 @@ namespace WPFUsefullThings
     public class ItemWindow<T> : BaseItemWindow
         where T : ProjectModel
     {
-        public ItemWindow(IItemViewModel<T> context) : base(context)
+        public ItemWindow(IItemViewModel<T> context) : base()
         {
             DataContext = context;
             var stackPanel = ItemWindowConstructor.CreateStackPanel(typeof(T));
