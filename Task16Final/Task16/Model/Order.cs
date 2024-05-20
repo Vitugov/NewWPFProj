@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using WPFUsefullThings;
+using EntityToWindow.Core;
 
 namespace Task16.Model
 {

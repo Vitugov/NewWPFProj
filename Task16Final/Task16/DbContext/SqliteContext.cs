@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using Task16.Model;
-using WPFUsefullThings;
+using EntityToWindow.Core;
 
 namespace Task16
 {

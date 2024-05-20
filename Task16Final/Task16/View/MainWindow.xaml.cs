@@ -1,7 +1,8 @@
 ﻿using System.Windows;
 using Task16.Model;
 using Task16.Other;
-using WPFUsefullThings;
+using EntityToWindow.ViewModels;
+using EntityToWindow.WPF;
 
 
 namespace Task16.View

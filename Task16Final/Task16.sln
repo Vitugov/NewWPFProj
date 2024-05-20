@@ -6,9 +6,12 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Task16", "Task16\Task16.csproj", "{25C1215A-1B37-4911-89FA-F2DBE9E515BB}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9051E253-6551-494D-A3D5-FD942F3151A3} = {9051E253-6551-494D-A3D5-FD942F3151A3}
+		{BF39F2E3-4B33-4E8E-AE81-AF3E0A837226} = {BF39F2E3-4B33-4E8E-AE81-AF3E0A837226}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFUsefullThings", "WPFUsefullThings\WPFUsefullThings.csproj", "{9051E253-6551-494D-A3D5-FD942F3151A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityToWindow", "EntityToWindow\EntityToWindow.csproj", "{BF39F2E3-4B33-4E8E-AE81-AF3E0A837226}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +27,10 @@ Global
 		{9051E253-6551-494D-A3D5-FD942F3151A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9051E253-6551-494D-A3D5-FD942F3151A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9051E253-6551-494D-A3D5-FD942F3151A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF39F2E3-4B33-4E8E-AE81-AF3E0A837226}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF39F2E3-4B33-4E8E-AE81-AF3E0A837226}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF39F2E3-4B33-4E8E-AE81-AF3E0A837226}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF39F2E3-4B33-4E8E-AE81-AF3E0A837226}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
