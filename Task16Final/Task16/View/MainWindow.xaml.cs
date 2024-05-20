@@ -15,9 +15,7 @@ namespace Task16.View
         public MainWindow()
         {
             Initialization.Instance.Init();
-            InitializeComponent();
-            DataContext = new MainViewModel(typeof(SqliteContext));
-            baseGrid.Children.Add(MainWindowConstructor.BuildButtonsStackPanel());
+            new MainProjectWindow(typeof(SqliteContext), this).Show();
         }
     }
 }
