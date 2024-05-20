@@ -1,61 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore;
-namespace WPFUsefullThings
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace WPFUsefullThings.DbHandler
 {
-    public static class DbHandler
+    public class DbHandler
     {
-        public static IQueryable<T> ShallowSet<T>(this DbContext dbContext)
-            where T : ProjectModel
+        public void ExecuteQuery(IQueryable querry, DbContext context)
         {
-            var classOverview = typeof(T).GetClassOverview();
-            IQueryable<T> query = dbContext.Set<T>();
-            foreach (var property in classOverview.PropertiesOfUserClass)
+
+        }
+
+        public void GetSet(Type type)
+        {
+            using (var context = DbContextCreator.Create())
             {
-                query = query.Include(property.Name);
+                var set = context.Set(type);
+
             }
-            return query;
-        }
-        public static IQueryable<T> DeepSet<T>(this DbContext dbContext)
-            where T : ProjectModel
-        {
-            var classOverview = typeof(T).GetClassOverview();
-            IQueryable<T> query = dbContext.Set<T>();
-            foreach (var property in classOverview.PropertiesOfUserClass)
-            {
-                query = query.Include(property.Name);
-            }
-            if (classOverview.HaveCollection)
-            {
-                var properties = classOverview.CollectionGenericParameter.GetClassOverview().PropertiesOfUserClass;
-                query = query.Include(classOverview.CollectionProperty.Name);
-                foreach (var property in properties)
-                {
-                    query = query.Include($"{classOverview.CollectionProperty.Name}.{property.Name}");
-                }
-            }
-            return query;
-        }
 
-        public static IQueryable<ProjectModel> DeepSet(this DbContext dbContext, Type type)
-        {
-            ProjectModel obj = (ProjectModel)Activator.CreateInstance(type);
-            return dbContext.DeepSet(obj);
+
         }
-
-        public static IQueryable<T> DeepSet<T>(this DbContext dbContext, T obj)
-            where T : ProjectModel
-        {
-            return dbContext.DeepSet<T>();
-        }
-
-        public static IQueryable<ProjectModel> Set(this DbContext dbContext, Type type)
-        {
-            var method = dbContext.GetType().GetMethods().Single(p =>
-                            p.Name == nameof(DbContext.Set) && p.ContainsGenericParameters && !p.GetParameters().Any());
-
-            method = method.MakeGenericMethod(type);
-
-            var result = (IQueryable<ProjectModel>)method.Invoke(dbContext, null);
-            return result;
-        }
-    }
 }

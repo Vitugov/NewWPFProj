@@ -12,14 +12,12 @@ namespace WPFUsefullThings
     {
         private Dictionary<string, ObservableCollection<KeyValuePair<string, ProjectModel>>> dic = [];
         public ObservableCollection<KeyValuePair<string, ProjectModel>> this[string type] { get => dic[type]; }
-        public ObservableCollection<KeyValuePair<string, ProjectModel>> Get(string type) => dic[type];
 
         public ClassComboDictionary(Type type)
         {
             type
                 .GetClassOverview()
                 .PropertiesOfUserClass
-                .ToList()
                 .ForEach(property => dic[property.Name] = GetCollectionForProperty(property));
         }
 

@@ -16,7 +16,7 @@ namespace WPFUsefullThings
     {
         public Type Type { get; set; }
 
-        public BaseItemWindow(Type type, IItemViewModel context)
+        public BaseItemWindow(IItemViewModel context)
         {
             InitializeComponent();
             

@@ -13,12 +13,12 @@ namespace WPFUsefullThings
 
         public bool IsSubClass { get; set; }
         public Type Type { get; set; }
-        public PropertyInfo[] Properties { get; set; }
+        public List<PropertyInfo> Properties { get; set; }
 
         public Dictionary<string, string> PropertiesDisplayNames { get; set; }
 
-        public PropertyInfo[] PropertiesOfUserClass { get; set; }
-        public CollectionPropertyOverview[] CollectionProperties { get; set; } = [];
+        public List<PropertyInfo> PropertiesOfUserClass { get; set; }
+        public List<CollectionPropertyOverview> CollectionProperties { get; set; } = [];
         public bool HaveCollection => CollectionProperties.Any();
         public bool HaveSubCollection => HaveCollection ? CollectionProperties[0].IsGenericClassSubClass : false;
         public PropertyInfo? CollectionProperty => HaveCollection ? CollectionProperties[0].Property : null;
@@ -32,12 +32,12 @@ namespace WPFUsefullThings
             var displayAttribute = GetClassDisplayName();
             DisplayNameSingular = displayAttribute.Singular;
             DisplayNamePlural = displayAttribute.Plural;
-            Properties = Type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            Properties = Type.GetProperties(BindingFlags.Instance | BindingFlags.Public).ToList();
             PropertiesDisplayNames = GetPropertiesDisplayNamesDic();
             PropertiesOfUserClass = GetPropertiesOfCoreClass();
             CollectionProperties = GetCollectionProperties()
                 .Select(property => new CollectionPropertyOverview(property))
-                .ToArray();
+                .ToList();
         }
 
         public ProjectModel CreateObject()
@@ -46,12 +46,12 @@ namespace WPFUsefullThings
         }
 
         
-        private PropertyInfo[] GetPropertiesOfCoreClass()
+        private List<PropertyInfo> GetPropertiesOfCoreClass()
         {
             var properties = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
             return properties
                 .Where(property => property.PropertyType.IsUserClass())
-                .ToArray();
+                .ToList();
         }
 
         private Dictionary<string, string> GetPropertiesDisplayNamesDic()
