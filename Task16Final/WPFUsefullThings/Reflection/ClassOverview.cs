@@ -22,10 +22,6 @@ namespace WPFUsefullThings
         public List<CollectionPropertyOverview> SubClassCollectionProperties => CollectionProperties
             .Where(property => property.IsGenericClassSubClass)
             .ToList();
-        public bool HaveCollection => CollectionProperties.Any();
-        public bool HaveSubCollection => HaveCollection ? CollectionProperties[0].IsGenericClassSubClass : false;
-        public PropertyInfo? CollectionProperty => HaveCollection ? CollectionProperties[0].Property : null;
-        public Type? CollectionGenericParameter => HaveCollection ? CollectionProperties[0].GenericParameter : null;
 
         public ClassOverview(Type type)
         {
@@ -48,7 +44,6 @@ namespace WPFUsefullThings
             return (ProjectModel)Activator.CreateInstance(Type);
         }
 
-        
         private List<PropertyInfo> GetPropertiesOfCoreClass()
         {
             var properties = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
@@ -92,15 +87,6 @@ namespace WPFUsefullThings
                     .Any(i => i == typeof(IEnumerable) && property.PropertyType != typeof(string)));
             return result;
         }
-
-        //public IList GetCollectionFor(object obj)
-        //{
-        //    if (!HaveSubCollection)
-        //        throw new Exception($"Class {Type.Name} has no SubCollection");
-        //    var collectionProperty = Type.GetProperty(CollectionProperty.Name);
-        //    var collection = (IList)collectionProperty.GetValue(obj);
-        //    return collection;
-        //}
 
         public static IList GetCollectionFor(CollectionPropertyOverview collectionPropertyOverview, object obj)
         {

@@ -8,12 +8,7 @@ namespace WPFUsefullThings
 {
     public class CollectionViewModel<T> : INotifyPropertyChangedPlus
         where T : ProjectModel, new()
-    {
-        private readonly Type _dbContextType;
-
-        private readonly ProjectModel? _parent;
-        private readonly ClassOverview _classOverview;
-        
+    {        
         public string Header { get; set; }
         
         private ObservableCollection<T> _itemCollection;
@@ -56,16 +51,8 @@ namespace WPFUsefullThings
 
         public CollectionViewModel()
         {
-            _classOverview = typeof(T).GetClassOverview();
-            Header = _classOverview.DisplayNamePlural;
-
-            //IQueryable<T> query;
+            Header = typeof(T).GetClassOverview().DisplayNamePlural;
             ItemCollection = [.. DbHandler.GetShallowSetList<T>()];
-            //using (var context = DbContextCreator.Create())
-            //{
-            //    var query = context.ShallowSet<T>();
-            //    ItemCollection = [.. query];
-            //}
             ItemCollectionView = new ListCollectionView(ItemCollection);
             ItemCollectionView.SortDescriptions.Add(new SortDescription("DisplayName", ListSortDirection.Ascending));
             
@@ -84,24 +71,8 @@ namespace WPFUsefullThings
         private void ExecuteDeleteItem(T? item)
         {
             if (item == null) { return; }
-
             ItemCollection.Remove(item);
             DbHandler.DeleteItem(item);
-            //using (var context = DbContextCreator.Create())
-            //{
-            //    var query = context.DeepSet<T>().Where(e => e.Id == item.Id);
-            //    item = query.First();
-            //    if (_classOverview.HaveSubCollection)
-            //    {
-            //        var collection = _classOverview.GetCollectionFor(item);
-            //        foreach (var row in collection)
-            //        {
-            //            context.Entry(row).State = EntityState.Deleted;
-            //        }
-            //    }
-            //    context.Set<T>().Remove(item);
-            //    context.SaveChanges();
-            //}
         }
     }
 }

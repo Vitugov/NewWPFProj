@@ -41,7 +41,6 @@ namespace WPFUsefullThings
 
         public ItemViewModel(T? item, ObservableCollection<T> itemCollection) : this()
         {
-
             var addition = item == null ? "*" : "";
             Header = typeof(T).GetClassOverview().DisplayNameSingular + addition;
             Item = new ObjectView<T>(item, itemCollection);

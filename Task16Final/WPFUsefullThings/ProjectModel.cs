@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace WPFUsefullThings
@@ -73,10 +74,12 @@ namespace WPFUsefullThings
                 var value = property.GetValue(this);
 
                 // Проверяем, является ли значение коллекцией
-                if (property == classOverview.CollectionProperty)
+                if (classOverview.CollectionProperties.Select(p => p.Property).Contains(property))
                 {
-                    var itemType = classOverview.CollectionGenericParameter;
-                    if (typeof(ICloneable).IsAssignableFrom(itemType))
+                    var itemType = classOverview.CollectionProperties.Where(p => p.Property == property).First();
+                    //var itemType = classOverview.CollectionGenericParameter;
+
+                    if (typeof(ICloneable).IsAssignableFrom(itemType.GenericParameter))
                     {
                         // Создаем новую коллекцию и клонируем каждый элемент
                         var clonedList = (IList)Activator.CreateInstance(value.GetType());
