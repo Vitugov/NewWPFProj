@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
 
 namespace WPFUsefullThings
 {
@@ -17,13 +19,10 @@ namespace WPFUsefullThings
         private readonly T _original;
         private readonly bool _isNew = false;
         private readonly Validation<T> _validation;
-        private readonly ClassOverview _classOverview;
 
 
         public ObjectView(T? original, ObservableCollection<T> collection)
         {
-            _classOverview = typeof(T).GetClassOverview();
-            
             if (original == null)
             {
                 _isNew = true;
@@ -31,12 +30,7 @@ namespace WPFUsefullThings
             }
             else
             {
-                using (var context = DbContextCreator.Create())
-                {
-                    var query = context.DeepSet<T>().Where(e => e.Id == original.Id);
-                    _original = query.First();
-                }
-
+                _original = DbHandler.GetDeepSetForObj(original);
             }
 
             Edit = (T)_original.Clone();
@@ -51,46 +45,14 @@ namespace WPFUsefullThings
                 ValidationRules.ShowErrorMessage();
                 return;
             }
-            if (_classOverview.HaveSubCollection)
-            {
-                SaveSubCollection();
-            }
-            _original.UpdateFrom(Edit);
-            
-            using (var context = DbContextCreator.Create())
-            {
-                var dbSet = context.Set<T>();
-                dbSet.Update(_original);
-                if (_isNew)
-                {
-                    context.Entry(_original).State = EntityState.Added;
-                }
-                context.SaveChanges();
-            }
+
+            DbHandler.SaveItem<T>(Edit, _original, _isNew);
             
             if (!_isNew)
             {
                 _collection.Remove(_original);
             }
             _collection.Add(_original);
-        }
-
-        private void IfNotADbContextThrowExeption(Type contextType)
-        {
-            if (contextType != typeof(DbContext) && !contextType.IsSubclassOf(typeof(DbContext)))
-                throw new ArgumentException("Type of the context don't belong to class DbContext");
-        }
-
-        private static IList CreateListOfType(Type type)
-        {
-            Type genericListType = typeof(List<>).MakeGenericType(type);
-            return (IList)Activator.CreateInstance(genericListType);
-        }
-
-        private void SaveSubCollection()
-        {
-            Type genericListType = typeof(SubCollectionSaver<>).MakeGenericType(_classOverview.CollectionGenericParameter);
-            Activator.CreateInstance(genericListType, _classOverview.GetCollectionFor(Edit), _classOverview.GetCollectionFor(_original));
         }
     }
 }

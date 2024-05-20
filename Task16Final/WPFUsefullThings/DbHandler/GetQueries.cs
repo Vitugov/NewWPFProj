@@ -18,33 +18,30 @@ namespace WPFUsefullThings
             where T : ProjectModel
         {
             var classOverview = typeof(T).GetClassOverview();
+            
             IQueryable<T> query = dbContext.Set<T>();
             foreach (var property in classOverview.PropertiesOfUserClass)
             {
                 query = query.Include(property.Name);
             }
-            if (classOverview.HaveCollection)
+            foreach(var collection in classOverview.SubClassCollectionProperties)
             {
-                var properties = classOverview.CollectionGenericParameter.GetClassOverview().PropertiesOfUserClass;
-                query = query.Include(classOverview.CollectionProperty.Name);
+                var properties = collection.GenericParameter.GetClassOverview().PropertiesOfUserClass;
                 foreach (var property in properties)
                 {
-                    query = query.Include($"{classOverview.CollectionProperty.Name}.{property.Name}");
+                    query = query.Include($"{collection.Property.Name}.{property.Name}");
                 }
             }
+            //if (classOverview.HaveCollection)
+            //{
+            //    var properties = classOverview.CollectionGenericParameter.GetClassOverview().PropertiesOfUserClass;
+            //    query = query.Include(classOverview.CollectionProperty.Name);
+            //    foreach (var property in properties)
+            //    {
+            //        query = query.Include($"{classOverview.CollectionProperty.Name}.{property.Name}");
+            //    }
+            //}
             return query;
-        }
-
-        public static IQueryable<ProjectModel> DeepSet(this DbContext dbContext, Type type)
-        {
-            ProjectModel obj = (ProjectModel)Activator.CreateInstance(type);
-            return dbContext.DeepSet(obj);
-        }
-
-        public static IQueryable<T> DeepSet<T>(this DbContext dbContext, T obj)
-            where T : ProjectModel
-        {
-            return dbContext.DeepSet<T>();
         }
 
         public static IQueryable<ProjectModel> Set(this DbContext dbContext, Type type)

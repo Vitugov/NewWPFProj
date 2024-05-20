@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WPFUsefullThings
 {
@@ -10,13 +12,11 @@ namespace WPFUsefullThings
         public List<T> ToAdd { get; set; }
         public List<T> ToUpdate { get; set; }
         public List<T> ToDelete { get; set; }
-        private ObservableCollection<T> _editCollection { get; set; }
-        private ObservableCollection<T> _originCollection { get; set; }
 
         public SubCollectionSaver(IList editCollection, IList originColection) 
         {
-            _editCollection = (ObservableCollection<T>)editCollection;
-            _originCollection = (ObservableCollection<T>)originColection;
+            var _editCollection = (ObservableCollection<T>)editCollection;
+            var _originCollection = (ObservableCollection<T>)originColection;
             ToAdd = _editCollection
                 .Where(item => !_originCollection.Contains(item))
                 .ToList();
@@ -25,21 +25,10 @@ namespace WPFUsefullThings
                 .ToList();
             ToDelete = _originCollection
                 .Where(item => !_editCollection.Contains(item))
-                .ToList();
+            .ToList();
             Save();
         }
 
-        public void Save()
-        {
-            using (var DbContext = DbContextCreator.Create())
-            {
-                var dbSet = DbContext.Set<T>();
-                dbSet.RemoveRange(ToDelete);
-                ToAdd.ForEach(item => DbContext.Entry(item).State = EntityState.Added);
-                dbSet.UpdateRange(ToUpdate);
-                DbContext.SaveChanges();
-            }
-        }
-
+        public void Save() => DbHandler.SaveSubCollection<T>(ToAdd, ToUpdate, ToDelete);
     }
 }

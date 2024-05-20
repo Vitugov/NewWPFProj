@@ -59,11 +59,13 @@ namespace WPFUsefullThings
             _classOverview = typeof(T).GetClassOverview();
             Header = _classOverview.DisplayNamePlural;
 
-            using (var context = DbContextCreator.Create())
-            {
-                var query = context.ShallowSet<T>();
-                ItemCollection = [.. query];
-            }
+            //IQueryable<T> query;
+            ItemCollection = [.. DbHandler.GetShallowSetList<T>()];
+            //using (var context = DbContextCreator.Create())
+            //{
+            //    var query = context.ShallowSet<T>();
+            //    ItemCollection = [.. query];
+            //}
             ItemCollectionView = new ListCollectionView(ItemCollection);
             ItemCollectionView.SortDescriptions.Add(new SortDescription("DisplayName", ListSortDirection.Ascending));
             
@@ -81,28 +83,25 @@ namespace WPFUsefullThings
 
         private void ExecuteDeleteItem(T? item)
         {
-            if (item == null)
-            {
-                return;
-            }
+            if (item == null) { return; }
 
             ItemCollection.Remove(item);
-
-            using (var context = DbContextCreator.Create())
-            {
-                var query = context.DeepSet<T>().Where(e => e.Id == item.Id);
-                item = query.First();
-                if (_classOverview.HaveSubCollection)
-                {
-                    var collection = _classOverview.GetCollectionFor(item);
-                    foreach (var row in collection)
-                    {
-                        context.Entry(row).State = EntityState.Deleted;
-                    }
-                }
-                context.Set<T>().Remove(item);
-                context.SaveChanges();
-            }
+            DbHandler.DeleteItem(item);
+            //using (var context = DbContextCreator.Create())
+            //{
+            //    var query = context.DeepSet<T>().Where(e => e.Id == item.Id);
+            //    item = query.First();
+            //    if (_classOverview.HaveSubCollection)
+            //    {
+            //        var collection = _classOverview.GetCollectionFor(item);
+            //        foreach (var row in collection)
+            //        {
+            //            context.Entry(row).State = EntityState.Deleted;
+            //        }
+            //    }
+            //    context.Set<T>().Remove(item);
+            //    context.SaveChanges();
+            //}
         }
     }
 }

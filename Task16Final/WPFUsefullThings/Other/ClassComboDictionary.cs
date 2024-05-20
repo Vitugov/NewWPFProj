@@ -23,17 +23,23 @@ namespace WPFUsefullThings
 
         private static ObservableCollection<KeyValuePair<string, ProjectModel>> GetCollectionForProperty(PropertyInfo property)
         {
-            using (var context = DbContextCreator.Create())
-            {
-                var set = context.Set(property.PropertyType);
+            var keyValuePairSet = DbHandler.GetSet(property.PropertyType)
+                .Select(obj => new KeyValuePair<string, ProjectModel>(obj.ToString(), obj))
+                .OrderBy(pair => pair.Key)
+                .ToList();
+            var collection = new ObservableCollection<KeyValuePair<string, ProjectModel>>(keyValuePairSet);
+            return collection;
+            //using (var context = DbContextCreator.Create())
+            //{
+            //    var set = context.Set(property.PropertyType);
 
-                var keyValuePairSet = set
-                    .Select(obj => new KeyValuePair<string, ProjectModel>(obj.ToString(), obj))
-                    .ToList()
-                    .OrderBy(pair => pair.Key);
-                var collection = new ObservableCollection<KeyValuePair<string, ProjectModel>>(keyValuePairSet);
-                return collection;
-            }
+            //    var keyValuePairSet = set
+            //        .Select(obj => new KeyValuePair<string, ProjectModel>(obj.ToString(), obj))
+            //        .ToList()
+            //        .OrderBy(pair => pair.Key);
+            //    var collection = new ObservableCollection<KeyValuePair<string, ProjectModel>>(keyValuePairSet);
+            //    return collection;
+            //}
         }
     }
 }

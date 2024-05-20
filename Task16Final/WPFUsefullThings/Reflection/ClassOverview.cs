@@ -11,14 +11,17 @@ namespace WPFUsefullThings
         public string DisplayNameSingular { get; set; }
         public string DisplayNamePlural { get; set; }
 
-        public bool IsSubClass { get; set; }
-        public Type Type { get; set; }
-        public List<PropertyInfo> Properties { get; set; }
+        public bool IsSubClass { get; }
+        public Type Type { get; }
+        public List<PropertyInfo> Properties { get; }
 
-        public Dictionary<string, string> PropertiesDisplayNames { get; set; }
+        public Dictionary<string, string> PropertiesDisplayNames { get; }
 
-        public List<PropertyInfo> PropertiesOfUserClass { get; set; }
-        public List<CollectionPropertyOverview> CollectionProperties { get; set; } = [];
+        public List<PropertyInfo> PropertiesOfUserClass { get; }
+        public List<CollectionPropertyOverview> CollectionProperties { get; } = [];
+        public List<CollectionPropertyOverview> SubClassCollectionProperties => CollectionProperties
+            .Where(property => property.IsGenericClassSubClass)
+            .ToList();
         public bool HaveCollection => CollectionProperties.Any();
         public bool HaveSubCollection => HaveCollection ? CollectionProperties[0].IsGenericClassSubClass : false;
         public PropertyInfo? CollectionProperty => HaveCollection ? CollectionProperties[0].Property : null;
@@ -90,13 +93,34 @@ namespace WPFUsefullThings
             return result;
         }
 
-        public IList GetCollectionFor(object obj)
+        //public IList GetCollectionFor(object obj)
+        //{
+        //    if (!HaveSubCollection)
+        //        throw new Exception($"Class {Type.Name} has no SubCollection");
+        //    var collectionProperty = Type.GetProperty(CollectionProperty.Name);
+        //    var collection = (IList)collectionProperty.GetValue(obj);
+        //    return collection;
+        //}
+
+        public static IList GetCollectionFor(CollectionPropertyOverview collectionPropertyOverview, object obj)
         {
-            if (!HaveSubCollection)
-                throw new Exception($"Class {Type.Name} has no SubCollection");
-            var collectionProperty = Type.GetProperty(CollectionProperty.Name);
-            var collection = (IList)collectionProperty.GetValue(obj);
-            return collection;
+            return (IList)collectionPropertyOverview.Property.GetValue(obj);
+        }
+
+        public static void InvokeSaver<T>(Type type, T edit, T original)
+        {
+            var classOverview = typeof(T).GetClassOverview();
+            var collections = classOverview.CollectionProperties;
+            foreach (var collection  in collections)
+            {
+                if (collection.IsGenericClassSubClass)
+                {
+                    var editCollection = GetCollectionFor(collection, edit);
+                    var originalCollection = GetCollectionFor(collection, original);
+                    Type genericListType = type.MakeGenericType(collection.GenericParameter);
+                    Activator.CreateInstance(genericListType, editCollection, originalCollection);
+                }
+            }
         }
     }
 }
