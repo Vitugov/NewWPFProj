@@ -1,8 +1,4 @@
-﻿using Castle.Core.Internal;
-using Microsoft.Xaml.Behaviors;
-using System.Collections;
-using System.ComponentModel;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;

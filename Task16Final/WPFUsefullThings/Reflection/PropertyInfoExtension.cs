@@ -1,11 +1,5 @@
-﻿using Castle.Core.Internal;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WPFUsefullThings
 {
@@ -18,7 +12,7 @@ namespace WPFUsefullThings
 
         public static bool IsVisible(this PropertyInfo property)
         {
-            return property.GetAttribute<InvisibleAttribute>() == null && property.GetGetMethod(false) != null;
+            return property.GetCustomAttribute<InvisibleAttribute>() == null && property.GetGetMethod(false) != null;
         }
 
         public static IEnumerable<PropertyInfo> NotCollection(this IEnumerable<PropertyInfo> enumerable)

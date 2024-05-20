@@ -1,5 +1,4 @@
-﻿using Microsoft.SqlServer.Management.HadrData;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;

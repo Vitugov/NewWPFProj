@@ -1,10 +1,4 @@
-﻿using Castle.Core.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 
 namespace WPFUsefullThings
 {
@@ -54,8 +48,8 @@ namespace WPFUsefullThings
         private static List<KeyValuePair<string, Type>> GetTypesForMainWindow()
         {
             return AllUserClasses
-                .Where(type => type.GetAttribute<SubClassAttribute>() == null)
-                .Select(type => new KeyValuePair<string, Type>(type.GetAttribute<DisplayNamesAttribute>().Plural, type))
+                .Where(type => type.GetCustomAttribute<SubClassAttribute>() == null)
+                .Select(type => new KeyValuePair<string, Type>(type.GetCustomAttribute<DisplayNamesAttribute>().Plural, type))
                 .OrderBy(pair => pair.Key)
                 .ToList();
         }

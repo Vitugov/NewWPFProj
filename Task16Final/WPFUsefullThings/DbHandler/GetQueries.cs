@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+
 namespace WPFUsefullThings
 {
     public static class GetQueries
