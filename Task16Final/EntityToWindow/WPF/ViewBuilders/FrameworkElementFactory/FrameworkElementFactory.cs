@@ -23,6 +23,11 @@ namespace EntityToWindow.WPF
             ];
         }
 
+        public static FrameworkElement CreateOverview(PropertyInfo property)
+        {
+            return new TextBlockOverviewFactory().Create(property);
+        }
+        
         public static FrameworkElement CreateElement(PropertyInfo property)
         {
             var factory = FindFactory(property);

@@ -19,7 +19,7 @@ namespace EntityToWindow.WPF
 
         public static StackPanel CreatePanelWithOrientation(PropertyInfo property, Orientation orientation)
         {
-            var textBlock = ItemWindowConstructor.CreateTextBlock(property);
+            var textBlock = FrameworkElementFactory.CreateOverview(property);
             var element = FrameworkElementFactory.CreateElement(property);
 
             var horizontalPanel = new StackPanel { Orientation = orientation };
@@ -30,5 +30,7 @@ namespace EntityToWindow.WPF
         }
         bool CanHandle(PropertyInfo property);
         int Priority { get; }
+
+
     }
 }

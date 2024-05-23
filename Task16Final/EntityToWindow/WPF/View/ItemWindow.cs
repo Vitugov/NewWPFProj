@@ -16,7 +16,7 @@ namespace EntityToWindow.WPF
         public ItemWindow(IItemViewModel<T> context) : base()
         {
             DataContext = context;
-            var stackPanel = ItemWindowConstructor.CreateStackPanel(typeof(T));
+            var stackPanel = ItemWindowConstructor.CreateMajorStackPanel(typeof(T));
             var buttonStackPanel = ItemWindowConstructor.BuildButtonStackPanel(this);
             stackPanel.Children.Add(buttonStackPanel);
             SetContent(stackPanel);

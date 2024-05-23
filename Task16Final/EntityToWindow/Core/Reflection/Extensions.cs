@@ -6,9 +6,9 @@ namespace EntityToWindow.Core
     {
         public static bool IsContainingString(this object obj, string str)
         {
-            var objectProperties = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             if (string.IsNullOrEmpty(str))
                 return true;
+            var objectProperties = obj.GetType().GetClassOverview().Properties;
             var result = objectProperties
                         .Any(property =>
                         {
